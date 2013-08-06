@@ -3972,3 +3972,11 @@ Stack trace:
 #29 {main}
 REQUEST_URI=/blog/question/new
 ---
+2013/08/06 22:00:08 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "xampp/index.php".' in C:\Users\Daniel\Documents\GitHub\askengine\framework\web\CWebApplication.php:286
+Stack trace:
+#0 C:\Users\Daniel\Documents\GitHub\askengine\framework\web\CWebApplication.php(141): CWebApplication->runController('xampp/index.php')
+#1 C:\Users\Daniel\Documents\GitHub\askengine\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#2 C:\Users\Daniel\Documents\GitHub\askengine\index.php(13): CApplication->run()
+#3 {main}
+REQUEST_URI=/xampp/index.php
+---
