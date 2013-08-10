@@ -1,8 +1,3 @@
-<?php
-/* @var $this QuestionController */
-/* @var $data Question */
-?>
-
 <div class="view" id="question-view-<?php echo $data->id; ?>">
 	<b><?php echo CHtml::encode($data->getAttributeLabel('question_text')); ?>:</b>
 	<?php echo CHtml::encode($data->question_text); ?>
@@ -13,31 +8,17 @@
 	<br />
         <?php
             if($data->status == 0 && $data->from_id != Yii::app()->user->id){
-                $url = Yii::app()->createAbsoluteUrl('question/ignore/', array('id'=>$data->id, 'ajax'=>true));
-                echo CHtml::ajaxLink('ignore',$url,array(
-                    'type'=>'POST',
-                    'success' => "function( data )
-                    {
-                      $('#question-view-".$data->id."').hide('slow');
-                    }",
-                    'beforeSend' => "function( data )
-                    {
-                      $('#question-view-".$data->id."').html('ignoring ...');
-                    }",
-                ));
+                $url = Yii::app()->createAbsoluteUrl('question/ignore/', array('ajax'=>1, 'id'=>$data->id));
+                echo CHtml::link('ignore',$url, array('class'=>'ajax-ignore'));
             }else{
-                $url = Yii::app()->createAbsoluteUrl('question/delete/', array('id'=>$data->id, 'ajax'=>true));
-                echo CHtml::ajaxLink('delete',$url,array(
-                    'type'=>'POST',
-                    'success' => "function( data )
-                    {
-                      $('#question-view-".$data->id."').hide('slow');
-                    }",
-                    'beforeSend' => "function( data )
-                    {
-                      $('#question-view-".$data->id."').html('deleting ...');
-                    }",
-                ));
+                $url = Yii::app()->createAbsoluteUrl('question/delete/', array('ajax'=>1, 'id'=>$data->id));
+                echo CHtml::link('delete',$url, array('class'=>'delete-link'));
             }
-            ?>
+            
+        ?>
+         
+        <?php
+            $url = Yii::app()->createUrl('question/respond/', array('ajax'=>1, 'id'=>$data->id));
+            echo CHtml::link('response',$url, array('class'=>'response-link'));    
+        ?>
 </div>

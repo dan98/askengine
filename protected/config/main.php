@@ -7,7 +7,7 @@
 // CWebApplication properties can be configured here.
 return array(
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
-	'name'=>'My Web Application',
+	'name'=>'Querify',
 
 	// preloading 'log' component
 	'preload'=>array('log'),
@@ -25,7 +25,19 @@ return array(
 			'password'=>false,
 			// If removed, Gii defaults to localhost only. Edit carefully to taste.
 			'ipFilters'=>array('127.0.0.1','::1'),
-		)
+		),
+                'hybridauth' => array(
+                    'baseUrl' => 'http://'. $_SERVER['SERVER_NAME'] . '/hybridauth', 
+                    'withYiiUser' => false, // Set to true if using yii-user
+                    "providers" => array (
+                        "facebook" => array ( 
+                            "enabled" => true,
+                            "keys"    => array ( "id" => "183715505133537", "secret" => "d6126713b6f4f1169c091a1cac81afa2" ),
+                            "scope"   => "email,publish_stream", 
+                            "display" => "" 
+                        )
+                    )
+                ),
 	),
 
 	// application components
@@ -34,7 +46,7 @@ return array(
 			// enable cookie-based authentication
 			'allowAutoLogin'=>true,
                         'loginUrl' => array('/user/login'),
-                        'returnUrl' => array('/'),
+                        'returnUrl' => '/',
                         'class' => 'WebUser',
 		),
 		'urlManager'=>array(

@@ -51,3 +51,4 @@ $this->breadcrumbs=array(
 
 <?php $this->endWidget(); ?>
 </div><!-- form -->
+<?php $this->widget('application.modules.hybridauth.widgets.renderProviders'); ?>

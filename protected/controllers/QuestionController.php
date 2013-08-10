@@ -140,13 +140,15 @@ class QuestionController extends Controller
 		$model=$this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
+		$this->performAjaxValidation($model);
 
 		if(isset($_POST['Question']))
 		{
 			$model->attributes=$_POST['Question'];
                         $model->setAttribute('status', 1);
-			if($model->save())
+                        //$ha = Yii::app()->getModule('hybridauth')->getHybridAuth();
+                        //$facebook = $ha->getAdapter('facebook');
+			if($model->save() && $_GET['ajax'] != 1)
 				$this->redirect(array('view','id'=>$model->id));
                 }
 		$this->render('respond',array(
@@ -175,6 +177,7 @@ class QuestionController extends Controller
                     $model = Question::model()->findByPk($id);
                     $model->scenario = 'status';
                     $model->status = 2;
+                    $id = $model->id;
                     $model->save();
                     if(!isset($_GET['ajax']))
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('question/'));
