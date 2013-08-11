@@ -7,7 +7,7 @@
 $this->widget('zii.widgets.CListView', array(
        'id' => 'QuestionList',
        'dataProvider' => $dataProvider,
-       'itemView' => '_view',
+       'itemView' => '_new',
        'template' => '{items} {pager}',
        'pager' => array(
                     'class' => 'ext.infiniteScroll.IasPager', 

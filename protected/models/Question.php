@@ -95,8 +95,23 @@ class Question extends CActiveRecord
                 ),
                 'mine'=>array(
                     'condition'=>'to_id='.Yii::app()->user->id
+                ),
+                'hided'=>array(
+                    'condition'=>'hide='.self::HIDE_TRUE
+                ),
+                'showed'=>array(
+                    'condition'=>'hide='.self::HIDE_FALSE
                 )
             );
+        }
+        
+        public function of($id)
+        {
+            $this->getDbCriteria()->mergeWith(array(
+                'condition'=>'to_id=:id',
+                'params'=>array(':id'=>$id),
+            ));
+            return $this;
         }
         
 	/**
@@ -129,7 +144,7 @@ class Question extends CActiveRecord
                         array('answer_text', 'required', 'on'=>'update'),
 			array('question_video_id, from_id, answer_text, answer_video_id, likes_n, status, updated_time, created_time', 'safe', 'on'=>'create'),
                         array('question_video_id, from_id, question_text, to_id, answer_video_id, likes_n, status, anonym, updated_time, created_time, anonym_custom', 'safe', 'on'=>'update'),
-                        array('to_id', 'numerical', 'integerOnly'=>true),
+                        array('to_id, hide', 'numerical', 'integerOnly'=>true),
                         array('anonym', 'in', 'range'=>$this->getAnonymRange()),
                         array('anonym_custom', 'length', 'min'=>5, 'max'=>30, 'tooShort'=>'At least 5 characters','tooLong'=>'Max 30')
                     );
@@ -144,6 +159,7 @@ class Question extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
                     'sender'=>array(self::BELONGS_TO, 'User', 'from_id'),
+                    'receiver'=>array(self::BELONGS_TO, 'User', 'to_id')
 		);
 	}
 

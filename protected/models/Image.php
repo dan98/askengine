@@ -37,12 +37,7 @@ class Image extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('filename, filesize, mime', 'required'),
-			array('filesize', 'numerical', 'integerOnly'=>true),
-			array('filename, mime', 'length', 'max'=>256),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, filename, filesize, mime', 'safe', 'on'=>'search'),
+			array('image', 'required')
 		);
 	}
 
@@ -54,6 +49,7 @@ class Image extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+                     'user' => array(self::BELONGS_TO, 'User', 'user_id'),
 		);
 	}
 

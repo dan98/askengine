@@ -5,6 +5,13 @@ class QuestionController extends Controller
         const STATUS_NEW = 0;
         const STATUS_RESPONDED = 1;
         const STATUS_IGNORED = 2;
+        
+        const ANONYM_TRUE = 1;
+        const ANONYM_FALSE = 0;
+        const ANONYM_CUSTOM = 2;
+        
+        const HIDE_TRUE = 1;
+        const HIDE_FALSE = 0;
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
@@ -18,8 +25,8 @@ class QuestionController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-			'postOnly + delete, ignore', // we only allow deletion via POST request
-                        'iAmTheReceiver + respond, ignore, delete'
+			'postOnly + delete, ignore, show, hide', // we only allow deletion via POST request
+                        'iAmTheReceiver + respond, ignore, delete, show, hide'
 		);
 	}
         
@@ -41,7 +48,7 @@ class QuestionController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('new','ignored','create','respond','ignore', 'delete'),
+				'actions'=>array('new','ignored','create','respond','ignore', 'delete', 'show', 'hide', 'hided'),
 				'users'=>array('@'),
 			),
 			array('deny',  // deny all users
@@ -95,7 +102,24 @@ class QuestionController extends Controller
             $this->render('ignored',array(
                 'dataProvider'=>$dataProvider
             ));
-            
+        }
+        public function actionHided()
+        {
+            $dataProvider=new EActiveDataProvider('Question', array(
+                'scopes'=>array('hided', 'responded'),
+                'criteria'=>array(
+                    'condition' => 'to_id = :to_id',
+                    'order' => 'created_time DESC',
+                    'params' => array(':to_id'=>Yii::app()->user->id)
+                ),
+                'pagination'=>array(
+                    'pageSize'=>10,
+                ),
+            ));
+
+            $this->render('hided',array(
+                'dataProvider'=>$dataProvider
+            ));
         }
 
 	/**
@@ -182,10 +206,32 @@ class QuestionController extends Controller
                     if(!isset($_GET['ajax']))
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('question/'));
         }
+        public function actionHide($id)
+	{
+                    $model = Question::model()->findByPk($id);
+                    $model->scenario = 'hide';
+                    $model->hide = self::HIDE_TRUE;
+                    $model->save();
+                    if(!isset($_GET['ajax']))
+			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('question/'));
+                    else
+                        $url = Yii::app()->createAbsoluteUrl('question/show/', array('ajax'=>1, 'id'=>$model->id));
+                        echo CHtml::link('show',$url, array('class'=>'show-link'));
+        }
+        public function actionShow($id)
+	{
+                    $model = Question::model()->findByPk($id);
+                    $model->scenario = 'hide';
+                    $model->hide = self::HIDE_FALSE;
+                    $model->save();
+                    if(!isset($_GET['ajax']))
+			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('question/'));
+                    else
+                        $url = Yii::app()->createAbsoluteUrl('question/hide/', array('ajax'=>1, 'id'=>$model->id));
+                        echo CHtml::link('hide',$url, array('class'=>'hide-link'));
+        }
 
-	/**
-	 * Lists all models.
-	 */
+
 	public function actionIndex()
 	{
 		$dataProvider=new CActiveDataProvider('Question');

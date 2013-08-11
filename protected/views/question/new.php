@@ -7,7 +7,7 @@
 $this->widget('zii.widgets.CListView', array(
        'id' => 'QuestionList',
        'dataProvider' => $dataProvider,
-       'itemView' => '_view',
+       'itemView' => '_new',
        'template' => '{items} {pager}',
        'pager' => array(
                     'class' => 'ext.infiniteScroll.IasPager', 
@@ -69,7 +69,7 @@ responselink = function(event){
     var url = $(this).attr('href');
     var form="";
     form += "<form id=\"question-form\" action=\""+url+"\" method=\"post\">";
-    form += "<textarea rows=\"6\" cols=\"50\" name=\"Question[answer_text]\" id=\"Question_answer_text\"><\/textarea>";
+    form += "<textarea rows=\"6\" cols=\"50\" name=\"Question[answer_text]\" id=\"Question_answer_text\"><\/textarea>hide : <input name=\"Question[hide]\" id=\"Question_hide\" value=\"1\" type=\"checkbox\">";
     form += "<input type=\"submit\" name=\"yt0\" value=\"Respond\" id=\"respond-submit\">";
     form += "<\/form>";
     $(this).parent().append('<div id="question-form-div">'+form+'</div>');

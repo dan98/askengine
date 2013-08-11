@@ -40,7 +40,7 @@ class UserController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('update', 'logout', 'delete', 'index'),
+				'actions'=>array('update', 'logout', 'delete', 'index', 'avatar'),
 				'users'=>array('@'),
 			),
 			array('deny',  // deny all users
@@ -92,11 +92,15 @@ class UserController extends Controller
 	 */
 	public function actionView($id = null)
 	{
+                // Redirect
                 if($id == null && Yii::app()->user->isGuest == true){
                     $this->redirect(array('user/login'));
                 }else if($id == null && Yii::app()->user->isGuest == false){
                     $id = Yii::app()->user->id;
                 }
+                
+                
+                // Question ActiveRecord
                 $q=new Question('create');
 
 		if(isset($_POST['Question']))
@@ -115,8 +119,25 @@ class UserController extends Controller
 				$this->redirect(array('view','id'=>$id));
 		}
                 
+                // Questions dataProvider.
+                $dataProvider=new EActiveDataProvider('Question', array(
+                    'scopes'=>array('showed', 'responded'),
+                    'criteria'=>array(  
+                        'condition'=>'to_id=:id',
+                        'params'=>array(':id'=>$id)
+                    ),
+                    'criteria'=>array(
+                        'order' => 'updated_time DESC'
+                    ),
+                    'pagination'=>array(
+                        'pageSize'=>10,
+                    ),
+                ));
+                
+                // Render
 		$this->render('view',array(
 			'model'=>$this->loadModel($id),
+                        'questions'=>$dataProvider,
                         'q'=>$q
 		));
 	}
