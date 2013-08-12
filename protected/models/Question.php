@@ -183,31 +183,4 @@ class Question extends CActiveRecord
 		);
 	}
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
-
-		$criteria=new CDbCriteria;
-
-		$criteria->compare('id',$this->id);
-		$criteria->compare('question_text',$this->question_text,true);
-		$criteria->compare('question_video_id',$this->question_video_id);
-		$criteria->compare('from_id',$this->from_id);
-		$criteria->compare('to_id',$this->to_id);
-		$criteria->compare('answer_text',$this->answer_text,true);
-		$criteria->compare('answer_video_id',$this->answer_video_id);
-		$criteria->compare('likes_n',$this->likes_n);
-		$criteria->compare('anonym',$this->anonym);
-		$criteria->compare('status',$this->status);
-		$criteria->compare('created_time',$this->created_time,true);
-
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-		));
-	}
 }

@@ -140,7 +140,8 @@ class QuestionController extends Controller
                         $user = User::model()->findByPk($model->to_id);
                         if(empty($user))
                             throw new CHttpException(403,'Unexistent user.');
-
+                        if($user->anonym_questions == 0 && $_POST['Question']['anonym'] != self::ANONYM_FALSE)
+                            throw new CHttpException(403,'This user doesnt accept anonym questions.');
                         $model->setAttribute('from_id', Yii::app()->user->id);
                         $model->setAttribute('status', 0);
                         $model->setAttribute('hide', 0);
@@ -169,15 +170,34 @@ class QuestionController extends Controller
 		if(isset($_POST['Question']))
 		{
 			$model->attributes=$_POST['Question'];
+                        if(CUploadedFile::getInstance($model,'image'))
+                        {
+                            $uploadedFile = CUploadedFile::getInstance($model,'image');
+                            $rnd = rand(0,9999);
+                            $fileName = "{$rnd}-{$uploadedFile}";  // random number + file name
+                            $model->image = $fileName;
+                        }
                         $model->setAttribute('status', 1);
+                        if($model->hide != 1){
+                            User::model()->addAnswer(Yii::app()->user->id);
+                        }
                         //$ha = Yii::app()->getModule('hybridauth')->getHybridAuth();
                         //$facebook = $ha->getAdapter('facebook');
-			if($model->save() && $_GET['ajax'] != 1)
-				$this->redirect(array('view','id'=>$model->id));
+			if($model->save()){
+                            if(isset($uploadedFile))
+                            {
+                                $uploadedFile->saveAs(dirname(Yii::app()->getBasePath())."\images\\".$fileName);
+                                Yii::import('ext.yii-easyimage.drivers.ImageKit');
+                                $image = ImageKit::factory("images/".$fileName);
+                                $image->resize(300, 300);
+                                $image->save("images-thumb/".$fileName);
+                            }
+                        }
                 }
-		$this->render('respond',array(
-			'model'=>$model
-		));
+                if(!isset($_GET['ajax']))
+                    $this->render('respond',array(
+                            'model'=>$model
+                    ));
 	}
 
 	/**
@@ -187,8 +207,10 @@ class QuestionController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		$this->loadModel($id)->delete();
-
+		$model = $this->loadModel($id);
+                User::model()->substractAnswer($model->to_id);
+                $model->delete();
+                
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 		if(!isset($_GET['ajax']))
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('question/'));
@@ -210,25 +232,33 @@ class QuestionController extends Controller
 	{
                     $model = Question::model()->findByPk($id);
                     $model->scenario = 'hide';
-                    $model->hide = self::HIDE_TRUE;
-                    $model->save();
-                    if(!isset($_GET['ajax']))
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('question/'));
-                    else
-                        $url = Yii::app()->createAbsoluteUrl('question/show/', array('ajax'=>1, 'id'=>$model->id));
-                        echo CHtml::link('show',$url, array('class'=>'show-link'));
+                    if($model->hide == self::HIDE_FALSE){
+                        $model->hide = self::HIDE_TRUE;
+                        User::model()->substractAnswer($model->to_id);
+                        $model->save();
+                        if(!isset($_GET['ajax']))
+                            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('question/'));
+                        else
+                            $url = Yii::app()->createAbsoluteUrl('question/show/', array('ajax'=>1, 'id'=>$model->id));
+                            echo CHtml::link('show',$url, array('class'=>'show-link'));
+                    }else
+                        throw new CHttpException('400', 'This question is already hided');
         }
         public function actionShow($id)
 	{
                     $model = Question::model()->findByPk($id);
                     $model->scenario = 'hide';
-                    $model->hide = self::HIDE_FALSE;
-                    $model->save();
-                    if(!isset($_GET['ajax']))
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('question/'));
-                    else
-                        $url = Yii::app()->createAbsoluteUrl('question/hide/', array('ajax'=>1, 'id'=>$model->id));
-                        echo CHtml::link('hide',$url, array('class'=>'hide-link'));
+                    if($model->hide == self::HIDE_TRUE){
+                        $model->hide = self::HIDE_FALSE;
+                        User::model()->addAnswer($model->to_id);
+                        $model->save();
+                        if(!isset($_GET['ajax']))
+                            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('question/'));
+                        else
+                            $url = Yii::app()->createAbsoluteUrl('question/hide/', array('ajax'=>1, 'id'=>$model->id));
+                            echo CHtml::link('hide',$url, array('class'=>'hide-link'));
+                    }else
+                        throw new CHttpException('400', 'This question is already hided');
         }
 
 

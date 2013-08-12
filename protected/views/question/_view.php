@@ -1,6 +1,12 @@
 <div class="view" id="question-view-<?php echo $data->id; ?>">
 	 - <?php echo CHtml::encode($data->question_text); ?><small> <?php echo CHtml::link('('.$data->sender->firstname." ".$data->sender->lastname.')', array('user/view', $data->sender->id)) ?></small><br>
 	 - <?php echo CHtml::encode($data->answer_text); ?><br>
+         <?php 
+            if($data->image)
+            {
+                echo CHtml::image("/images-thumb/".$data->image);
+            }
+         ?>
          <div align="right">
              <small><?php echo Time::timeAgoInWords($data->updated_time); ?></small>
              <?php

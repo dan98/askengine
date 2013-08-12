@@ -58,6 +58,7 @@ class User extends CActiveRecord
                         $this->setAttribute('birthday', $this->year . '-' . $this->month . '-' . $this->day);
                         $this->setAttribute('password', $this->encrypt($this->password));
                         $this->setAttribute('status', 1);
+                        $this->setAttribute('anonym_questions', 1);
                         
                 }
                 return true;
@@ -222,5 +223,25 @@ class User extends CActiveRecord
                         $years["{$i}"]="{$i}";
                 }
                 return $years;                   
+        }
+        public function addAnswer($id){
+            $user = User::model()->findByPk($id);
+            $user->answers_n = $user->answers_n + 1;
+            $user->password = null;
+            if($user->save())
+                return true;
+            else{
+                print_r( $user->getErrors());
+            }
+        }
+        public function substractAnswer($id){
+            $user = User::model()->findByPk($id);
+            $user->answers_n = $user->answers_n - 1;
+            $user->password = null;
+            if($user->save())
+                return true;
+            else{
+                print_r( $user->getErrors());
+            }
         }
 }

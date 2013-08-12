@@ -11,7 +11,17 @@ $this->menu=array(
 	array('label'=>'Manage User', 'url'=>array('admin')),
 );
 ?>
-<?php echo CHtml::image("/avatar-thumb/".$model->image->image); ?>
+<?php
+    if($model->image)
+    {
+        echo CHtml::image('/avatar-thumb/'.$model->image->image); 
+    }
+    else
+    {
+        echo CHtml::image('/avatar-thumb/'.'no_avatar.png', 'title', array('width'=>100, 'height'=>100)); 
+    }
+    echo CHtml::link("new avatar", array('image/avatar'))
+?>
 <h1><?php echo $model->firstname.' '.$model->lastname ?></h1>
 
 
@@ -29,15 +39,14 @@ $this->menu=array(
 		'answers_n',
 		'likes_n',
 		'followers_n',
-		'last_login_time',
-		'image_id',
+		'last_login_time'
 	),
 )); ?>
 <div class="form">
     
     <?php $form=$this->beginWidget('CActiveForm', array(
             'id'=>'question-form',
-            'enableAjaxValidation'=>false,
+            'enableAjaxValidation'=>true,
     )); ?>
             <?php echo $form->errorSummary($q); ?>
 
@@ -47,8 +56,14 @@ $this->menu=array(
                     <?php echo $form->error($q,'question_text'); ?>
             </div>
             <div class="row">
-                    <?php echo $form->dropDownList($q,'anonym', $q->getAnonymOptions()); ?>
-                    <?php echo $form->error($q,'anonym'); ?>
+                <?php if($model->id != Yii::app()->user->id){ ?>
+                    <?php
+                    if($model->anonym_questions == 1)
+                        echo $form->dropDownList($q,'anonym', $q->getAnonymOptions()); 
+                    else 
+                        echo $form->dropDownList($q,'anonym', $q->getAnonymOptions(), array('options'=>array('0'=>array('selected'=>true)), 'disabled'=>true)); 
+                    ?>
+                <?php } ?>
             </div>
             <div id='custom_anonym'>
             </div>
@@ -65,7 +80,7 @@ $this->menu=array(
             </script>
             <div class="row buttons">
                     <?php echo $form->hiddenField($q,'to_id',array('value'=>$model->id)); ?>
-                    <?php echo CHtml::submitButton($q->isNewRecord ? 'Create' : 'Save'); ?>
+                    <?php echo CHtml::submitButton('Ask now'); ?>
             </div>
 
     <?php $this->endWidget(); ?>

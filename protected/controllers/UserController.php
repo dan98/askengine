@@ -10,6 +10,8 @@ class UserController extends Controller
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
 	 */
 	public $layout='//layouts/column2';
+        
+        private $_identity;
 
 	/**
 	 * @return array action filters
@@ -111,6 +113,8 @@ class UserController extends Controller
                         $user = User::model()->findByPk($q->to_id);
                         if(empty($user))
                             throw new CHttpException(403,'Unexistent user.');
+                        if($user->anonym_questions == 0 && $_POST['Question']['anonym'] != 0)
+                           throw new CHttpException(403,'This user doesnt accept anonym questions.');
 
                         $q->setAttribute('from_id', Yii::app()->user->id);
                         $q->setAttribute('status', 0);
@@ -156,8 +160,19 @@ class UserController extends Controller
 		if(isset($_POST['User']))
 		{
 			$model->attributes=$_POST['User'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			if($model->save()){
+				if($this->_identity===null)
+                                {
+                                        $this->_identity=new UserIdentity($_POST['User']['email'],$_POST['User']['password']);
+                                        $this->_identity->authenticate();
+                                }
+                                if($this->_identity->errorCode===UserIdentity::ERROR_NONE)
+                                {
+                                        $duration= 3600; // 30 days
+                                        Yii::app()->user->login($this->_identity,$duration);
+                                        $this->redirect('/');
+                                }
+                        }
 		}
 
 		$this->render('create',array(

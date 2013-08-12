@@ -56,6 +56,12 @@
 		<?php echo $form->textField($model,'title',array('rows'=>6, 'cols'=>50)); ?>
 		<?php echo $form->error($model,'title'); ?>
 	</div>
+        
+        <div class="row">
+		<?php echo $form->labelEx($model,'anonym_questions'); ?>
+		<?php echo $form->checkBox($model,'anonym_questions'); ?>
+		<?php echo $form->error($model,'anonym_questions'); ?>
+	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'birthday'); ?>

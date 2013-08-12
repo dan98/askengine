@@ -46,6 +46,11 @@ class RemoteUserIdentity extends CBaseUserIdentity {
 			} else {
 				$this->id = $user->id;
 				$this->username = $user->username;
+                                $this->setState('lastLogin', date("m/d/y g:i A", strtotime($user->last_login_time)));
+                                $this->setState('roles', $user->role);     
+                                $user->saveAttributes(array(
+                                    'last_login_time'=>date("Y-m-d H:i:s", time()),
+                                ));
 				$this->errorCode = self::ERROR_NONE;
 			}
 			return $this->errorCode == self::ERROR_NONE;

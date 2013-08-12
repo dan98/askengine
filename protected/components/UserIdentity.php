@@ -15,7 +15,7 @@ class UserIdentity extends CUserIdentity
 		else
 		{
                     $this->_id=$user->id;
-                    $this->username=$user->email;
+                    $this->username=$user->username;
                     $this->setState('lastLogin', date("m/d/y g:i A", strtotime($user->last_login_time)));
                     $this->setState('roles', $user->role);     
                     $user->saveAttributes(array(
