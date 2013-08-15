@@ -125,7 +125,7 @@ class UserController extends Controller
                 
                 // Questions dataProvider.
                 $dataProvider=new EActiveDataProvider('Question', array(
-                    'scopes'=>array('showed', 'responded'),
+                    'scopes'=>array('showed', 'responded', 'mine'),
                     'criteria'=>array(  
                         'condition'=>'to_id=:id',
                         'params'=>array(':id'=>$id)
@@ -222,9 +222,14 @@ class UserController extends Controller
 	/**
 	 * Lists all models.
 	 */
-	public function actionIndex()
+	public function actionFollowers($id = null)
 	{
-		$dataProvider=new CActiveDataProvider('User');
+                if($id == null && Yii::app()->user->isGuest == true){
+                    $this->redirect(array('user/login'));
+                }else if($id == null && Yii::app()->user->isGuest == false){
+                    $id = Yii::app()->user->id;
+                }
+                $dataProvider = User::model()->findByPk($id)->followers;
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));

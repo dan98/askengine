@@ -1,6 +1,6 @@
 <div id="hybridauth-openid-div">
 	<p>Enter your OpenID identity or provider:</p>
-	<form action="<?php echo $this->config['baseUrl'];?>/default/login/" method="get" id="hybridauth-openid-form" >
+	<form action="<?php echo $this->config['baseUrl'];?>/user/login/" method="get" id="hybridauth-openid-form" >
 		<input type="hidden" name="provider" value="openid"/>
 		<input type="text" name="openid-identity" size="30"/>
 	</form>
@@ -8,7 +8,7 @@
 
 <div id="hybridauth-confirmunlink">
 	<p>Unlink provider?</p>
-	<form action="<?php echo $this->config['baseUrl'];?>/default/unlink" method="post" id="hybridauth-unlink-form" >
+	<form action="<?php echo $this->config['baseUrl'];?>/user/unlink" method="post" id="hybridauth-unlink-form" >
 		<input type="hidden" name="hybridauth-unlinkprovider" id="hybridauth-unlinkprovider" value=""/>
 	</form>
 </div>

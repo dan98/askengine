@@ -2,5 +2,5 @@
 return array (
   'template' => 'default',
   'baseClass' => 'Controller',
-  'actions' => 'isFollowing follow unFollow',
+  'actions' => 'likes like dislike',
 );

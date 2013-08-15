@@ -10,6 +10,8 @@ $this->menu=array(
 	array('label'=>'Delete User', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?')),
 	array('label'=>'Manage User', 'url'=>array('admin')),
 );
+
+$me = $model->id == Yii::app()->user->id ? true : false;
 ?>
 <?php
     if($model->image)
@@ -20,11 +22,24 @@ $this->menu=array(
     {
         echo CHtml::image('/avatar-thumb/'.'no_avatar.png', 'title', array('width'=>100, 'height'=>100)); 
     }
-    echo CHtml::link("new avatar", array('image/avatar'))
+    if($me)
+        echo CHtml::link("new avatar", array('image/avatar'))
 ?>
-<h1><?php echo $model->firstname.' '.$model->lastname ?></h1>
-
-
+<h1>
+    <?php echo $model->firstname.' '.$model->lastname ?>
+    <small>
+    <?php
+     if(!$me)
+        if(!Follow::model()->isFollowing($model->id)){
+            $url = Yii::app()->createAbsoluteUrl('follow/createFollow/', array('ajax'=>1, 'id'=>$model->id));
+            echo CHtml::link('follow',$url, array('class'=>'follow-link'));
+        }else{
+            $url = Yii::app()->createAbsoluteUrl('follow/unFollow/', array('ajax'=>1, 'id'=>$model->id));
+            echo CHtml::link('unfollow',$url, array('class'=>'unfollow-link')); 
+        }
+    ?>
+    </small>
+</h1>
 <?php $this->widget('zii.widgets.CDetailView', array(
 	'data'=>$model,
 	'attributes'=>array(
@@ -39,7 +54,9 @@ $this->menu=array(
 		'answers_n',
 		'likes_n',
 		'followers_n',
-		'last_login_time'
+		'last_login_time',
+                'followers',
+                'following'
 	),
 )); ?>
 <div class="form">
@@ -56,7 +73,7 @@ $this->menu=array(
                     <?php echo $form->error($q,'question_text'); ?>
             </div>
             <div class="row">
-                <?php if($model->id != Yii::app()->user->id){ ?>
+                <?php if(!$me){ ?>
                     <?php
                     if($model->anonym_questions == 1)
                         echo $form->dropDownList($q,'anonym', $q->getAnonymOptions()); 
@@ -115,10 +132,15 @@ $this->widget('zii.widgets.CListView', array(
 jQuery.ias({'history':true,'triggerPageTreshold':3,'trigger':'Загрузить еще','container':'#QuestionList > .items','item':'.view','pagination':'#QuestionList .pager','next':'#QuestionList .next:not(.disabled):not(.hidden) a','loader':'Загрузка'});
 
 function refreshbinds(){
-   $('.hide-link').unbind('click');
-   $('.hide-link').bind('click', hideandshowlink);
-   $('.show-link').unbind('click');
-   $('.show-link').bind('click', hideandshowlink);
+    $('.hide-link').unbind('click');
+    $('.hide-link').bind('click', hideandshowlink);
+    $('.show-link').unbind('click');
+    $('.show-link').bind('click', hideandshowlink);
+    $('.follow-link').unbind('click');
+    $('.follow-link').bind('click', followunfollowlink);
+    $('.unfollow-link').unbind('click');
+    $('.unfollow-link').bind('click', followunfollowlink);
+   
 }
 hideandshowlink = function(event){
     event.preventDefault();
@@ -129,6 +151,20 @@ hideandshowlink = function(event){
         context: this,
         beforeSend:function(){
              $(this).parent().parent().hide('slow');
+        }
+    });
+};
+followunfollowlink = function(event){
+    event.preventDefault();
+    var url = $(this).attr('href');
+    $.ajax({
+        type:'POST',
+        url: url,
+        context: this,
+        success:function(data){
+             $(this).parent().append(data);
+             $(this).remove();
+             refreshbinds();
         }
     });
 };

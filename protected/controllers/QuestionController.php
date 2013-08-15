@@ -17,6 +17,7 @@ class QuestionController extends Controller
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
 	 */
 	public $layout='//layouts/column2';
+        public $defaultAction='feed';
 
 	/**
 	 * @return array action filters
@@ -44,11 +45,11 @@ class QuestionController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
+				'actions'=>array('view'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('new','ignored','create','respond','ignore', 'delete', 'show', 'hide', 'hided'),
+				'actions'=>array('new','ignored','create','respond','ignore', 'delete', 'show', 'hide', 'hided','feed'),
 				'users'=>array('@'),
 			),
 			array('deny',  // deny all users
@@ -181,8 +182,6 @@ class QuestionController extends Controller
                         if($model->hide != 1){
                             User::model()->addAnswer(Yii::app()->user->id);
                         }
-                        //$ha = Yii::app()->getModule('hybridauth')->getHybridAuth();
-                        //$facebook = $ha->getAdapter('facebook');
 			if($model->save()){
                             if(isset($uploadedFile))
                             {
@@ -262,10 +261,21 @@ class QuestionController extends Controller
         }
 
 
-	public function actionIndex()
+	public function actionFeed()
 	{
-		$dataProvider=new CActiveDataProvider('Question');
-		$this->render('index',array(
+                $criteria = new CDbCriteria;
+                $criteria->join = 'INNER JOIN `{{user_user_assignment}}` ON `t`.`to_id` = `{{user_user_assignment}}`.`user_2`';
+                $criteria->condition = "t.status = :status AND {{user_user_assignment}}.user_1 = :user_1";
+                $criteria->order = 't.created_time DESC';
+                $criteria->params = array(':status'=>self::STATUS_RESPONDED, ':user_1'=>Yii::app()->user->id);
+                $criteria->with = array('receiver', 'receiver.image', 'likes_n');
+		$dataProvider=new CActiveDataProvider('Question', array(
+                    'criteria'=>$criteria,
+                    'pagination'=>array(
+                        'pageSize'=>10,
+                    ),
+                ));
+		$this->render('feed',array(
 			'dataProvider'=>$dataProvider,
 		));
 	}

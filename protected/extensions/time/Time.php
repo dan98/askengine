@@ -112,7 +112,7 @@ class Time {
 	* @param array $options Default format if timestamp is used in $dateString
 	* @return string Relative time string.
 	*/
-	public function timeAgoInWords($dateTime, $options = array()) {
+	public static function timeAgoInWords($dateTime, $options = array()) {
 		$now = time();
 
 		$inSeconds = strtotime($dateTime);

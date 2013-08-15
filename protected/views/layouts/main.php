@@ -33,6 +33,7 @@
                              'encodeLabel'=>false,
                              'items'=>array(
                                      array('label'=>'Home', 'url'=>'/'),
+                                     array('label'=>'Me', 'url'=>'/me'),
                                      array('label'=>'Questions'.$question_number, 'url'=>array('/question/new/')),
                                      array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/user/logout'), 'visible'=>!Yii::app()->user->isGuest)
                              ),

@@ -1,34 +1,34 @@
 <?php
-class FollowController extends Controller
+
+class LikeController extends Controller
 {
-    
-    	public function actionIsfollowing($id)
+	public function actionLikes($id)
 	{
-            return Follow::model()->isFollowing($id);
+            return Like::model()->likes($id);
 	}
         
         
-	public function actionCreateFollow($id)
+	public function actionCreateLike($id)
 	{
-            if(Follow::model()->createFollow($id)){
-                $url = Yii::app()->createAbsoluteUrl('follow/unFollow/', array('ajax'=>1, 'id'=>$id));
-                echo CHtml::link('unfollow',$url, array('class'=>'unfollow-link')); 
+            if(Like::model()->createLike($id)){
+                $url = Yii::app()->createAbsoluteUrl('like/dislike/', array('ajax'=>1, 'id'=>$id));
+                echo CHtml::link('dislike',$url, array('class'=>'dislike-link')); 
             }
 	}
 
-	public function actionUnFollow($id)
+	public function actionDislike($id)
 	{
-            if(Follow::model()->unFollow($id)){
-                $url = Yii::app()->createAbsoluteUrl('follow/createFollow/', array('ajax'=>1, 'id'=>$id));
-                echo CHtml::link('follow',$url, array('class'=>'follow-link'));
+            if(Like::model()->dislike($id)){
+                $url = Yii::app()->createAbsoluteUrl('like/createLike/', array('ajax'=>1, 'id'=>$id));
+                echo CHtml::link('like',$url, array('class'=>'like-link'));
             }
 	}
-
-	public function filters()
+        
+        public function filters()
 	{
 		// return the filter configuration for this controller, e.g.:
 		return array(
-			'postOnly + follow, isFollowing, unFollow'
+			'postOnly + likes, like, dislike'
 		);
 	}
         

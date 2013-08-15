@@ -18,7 +18,8 @@ return array(
 		'application.components.*',
                 'application.vendors.*',
                 'ext.time.Time',
-                'ext.eactivedataprovider.EActiveDataProvider'
+                'ext.eactivedataprovider.EActiveDataProvider',
+                'application.modules.hybridauth.controllers.*'
 	),
 
 	'modules'=>array(
@@ -34,12 +35,12 @@ return array(
                     "providers" => array (
                         "facebook" => array ( 
                             "enabled" => true,
-                            "keys"    => array ( "id" => "183715505133537", "secret" => "d6126713b6f4f1169c091a1cac81afa2" ),
-                            "scope"   => "email,publish_stream", 
+                            "keys"    => array ( "id" => "183715505133537", "secret" => "f50af154c41ab4bceddb8bf87a0b5515" ),
+                            "scope"   => "email,publish_stream,user_birthday, publish_actions, user_likes", 
                             "display" => "" 
                         )
                     )
-                ),
+                )
             ),
 
 	// application components
@@ -59,7 +60,8 @@ return array(
                                 '<id:\d+>'=>'user/view/',
 				'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
 				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
-				''=>'/user/view/',
+				''=>'/question/',
+                                '/me'=>'user/view'
 			),
 		),
 		'db'=>array(
@@ -82,6 +84,9 @@ return array(
                             array(
                                     'class'=>'CFileLogRoute',
                                     'levels'=>'error, warning'
+                            ),
+                            array(
+                                    'class'=>'ext.yii-debug-toolbar.yii-debug-toolbar.YiiDebugToolbarRoute',
                             )
                         ),
 		),

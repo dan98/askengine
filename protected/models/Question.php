@@ -158,8 +158,17 @@ class Question extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-                    'sender'=>array(self::BELONGS_TO, 'User', 'from_id'),
-                    'receiver'=>array(self::BELONGS_TO, 'User', 'to_id')
+                    'sender'=>array(self::BELONGS_TO, 'User', 'from_id',
+                                'with'=>array(
+                                    'image'
+                                ),
+                    ),
+                    'receiver'=>array(self::BELONGS_TO, 'User', 'to_id',
+                                'with'=>array(
+                                    'image'
+                                ),
+                    ),
+                    'likes_n'=>array(self::STAT, 'User', '{{user_question_assignment}}(question_id, user_id)')
 		);
 	}
 

@@ -16,35 +16,27 @@ class Follow extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return '{{user_user_assigment}}';
-	}
-
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		return array(
-                    'follower'=>array(self::HAS_ONE, 'User', 'user_1'),
-                    'follows'=>array(self::HAS_ONE, 'User', 'user_2')
-		);
+		return '{{user_user_assignment}}';
 	}
         
-        public function isfollowing($id)
+        public function isFollowing($id)
         {
             $follow = $this->findByAttributes(array('user_1'=>Yii::app()->user->id, 'user_2'=>$id));
-            return true;
+            return $follow;
+        
         }
         
-        public function follow($id)
+        public function createFollow($id)
         {
             if(!User::model()->findByPk($id) === null)
                 throw new CHttpException(404, 'User to follow not found.');
-            $this->user_1 = Yii::app()->user->id;
-            $this->user_2 = $id;
-            if($this->save())
+            $model = new Follow;
+            $model->user_1 = Yii::app()->user->id;
+            $model->user_2 = $id;
+            if($this->exists("user_1={$model->user_1} AND user_2 = {$model->user_2}")){
+                return true;
+            }
+            if($model->save())
                 return true;
             else
                 return false;
@@ -53,9 +45,8 @@ class Follow extends CActiveRecord
         {
             if(!User::model()->findByPk($id) === null)
                 throw new CHttpException(404, 'User to follow not found.');
-            $this->user_1 = Yii::app()->user->id;
-            $this->user_2 = $id;
-            if($this->delete())
+            $model = $this->findByAttributes(array('user_1'=>Yii::app()->user->id, 'user_2'=>$id));
+            if($model->delete())
                 return true;
             else
                 return false;
