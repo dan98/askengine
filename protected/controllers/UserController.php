@@ -123,16 +123,13 @@ class UserController extends Controller
 				$this->redirect(array('view','id'=>$id));
 		}
                 
-                // Questions dataProvider.
-                $dataProvider=new EActiveDataProvider('Question', array(
-                    'scopes'=>array('showed', 'responded', 'mine'),
-                    'criteria'=>array(  
-                        'condition'=>'to_id=:id',
-                        'params'=>array(':id'=>$id)
-                    ),
-                    'criteria'=>array(
-                        'order' => 'updated_time DESC'
-                    ),
+                $criteria = new CDbCriteria;
+                $criteria->params = array(':id'=>$id);
+                $criteria->condition = 'to_id=:id';
+                $criteria->with = array('likes', 'liked');
+                $criteria->scopes = array('showed', 'responded');
+		$dataProvider=new CActiveDataProvider('Question', array(
+                    'criteria'=>$criteria,
                     'pagination'=>array(
                         'pageSize'=>10,
                     ),

@@ -8,7 +8,7 @@ class LikeController extends Controller
 	}
         
         
-	public function actionCreateLike($id)
+	public function actionLike($id)
 	{
             if(Like::model()->createLike($id)){
                 $url = Yii::app()->createAbsoluteUrl('like/dislike/', array('ajax'=>1, 'id'=>$id));
@@ -19,7 +19,7 @@ class LikeController extends Controller
 	public function actionDislike($id)
 	{
             if(Like::model()->dislike($id)){
-                $url = Yii::app()->createAbsoluteUrl('like/createLike/', array('ajax'=>1, 'id'=>$id));
+                $url = Yii::app()->createAbsoluteUrl('like/like/', array('ajax'=>1, 'id'=>$id));
                 echo CHtml::link('like',$url, array('class'=>'like-link'));
             }
 	}

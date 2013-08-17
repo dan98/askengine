@@ -32,10 +32,13 @@
                     $this->widget('zii.widgets.CMenu',array(
                              'encodeLabel'=>false,
                              'items'=>array(
-                                     array('label'=>'Home', 'url'=>'/'),
-                                     array('label'=>'Me', 'url'=>'/me'),
-                                     array('label'=>'Questions'.$question_number, 'url'=>array('/question/new/')),
-                                     array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/user/logout'), 'visible'=>!Yii::app()->user->isGuest)
+                                    array('label'=>'Home', 'url'=>'/'),
+                                    array('label'=>'Me', 'url'=>'/me'),
+                                    array('label'=>'Questions'.$question_number, 'url'=>array('/question/new/')),
+                                    array('label'=>'Likes', 'url'=>array('/question/likes/')),
+                                    array('label'=>'Hided', 'url'=>array('/question/hided/')),
+                                    array('label'=>'Ignored', 'url'=>array('/question/ignored/')),
+                                    array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/user/logout'), 'visible'=>!Yii::app()->user->isGuest)
                              ),
                      ));
                 }else{

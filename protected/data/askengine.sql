@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1
--- Время создания: Авг 12 2013 г., 20:56
--- Версия сервера: 5.5.32
--- Версия PHP: 5.4.16
+-- Время создания: Авг 16 2013 г., 14:26
+-- Версия сервера: 5.6.11
+-- Версия PHP: 5.5.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -39,14 +39,15 @@ CREATE TABLE IF NOT EXISTS `ha_logins` (
   KEY `loginProviderIdentifier` (`loginProviderIdentifier`),
   KEY `userId` (`userId`),
   KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 --
 -- Дамп данных таблицы `ha_logins`
 --
 
 INSERT INTO `ha_logins` (`id`, `userId`, `loginProvider`, `loginProviderIdentifier`) VALUES
-(1, 4, 'facebook', '100002946424643');
+(1, 4, 'facebook', '100002946424643'),
+(2, 15, 'facebook', '100006579181545');
 
 -- --------------------------------------------------------
 
@@ -61,14 +62,15 @@ CREATE TABLE IF NOT EXISTS `tbl_image` (
   `filesize` int(11) NOT NULL,
   `mime` varchar(256) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=61 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=62 ;
 
 --
 -- Дамп данных таблицы `tbl_image`
 --
 
 INSERT INTO `tbl_image` (`id`, `image`, `user_id`, `filesize`, `mime`) VALUES
-(60, '2425-sDbMEow.jpg', 4, 0, '');
+(60, '2425-sDbMEow.jpg', 4, 0, ''),
+(61, '1687-8775428119_dbb1a7d6f6_h.jpg', 15, 0, '');
 
 -- --------------------------------------------------------
 
@@ -93,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `tbl_question` (
   `updated_time` datetime NOT NULL,
   `created_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=145 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=155 ;
 
 --
 -- Дамп данных таблицы `tbl_question`
@@ -132,7 +134,17 @@ INSERT INTO `tbl_question` (`id`, `question_text`, `question_video_id`, `from_id
 (141, 'awdwdwq1', 0, 14, 3, '', 0, '', 0, 0, '', 0, 0, '2013-08-12 15:17:58', '2013-08-12 15:17:58'),
 (142, 'awdawdawdefef', 0, 14, 3, '', 0, '', 0, 0, '', 0, 0, '2013-08-12 18:30:29', '2013-08-12 18:30:29'),
 (143, 'awdawdawdefef', 0, 14, 3, '', 0, '', 0, 1, '', 0, 0, '2013-08-12 18:30:31', '2013-08-12 18:30:31'),
-(144, 'awdawdawdefef', 0, 14, 3, '', 0, '', 0, 1, '', 0, 0, '2013-08-12 18:30:32', '2013-08-12 18:30:32');
+(144, 'awdawdawdefef', 0, 14, 3, '', 0, '', 0, 1, '', 0, 0, '2013-08-12 18:30:32', '2013-08-12 18:30:32'),
+(145, 'IM CEO, Bitch.', 0, 15, 5, 'Its our time !', 0, '2972-this-is-our-time-cover.jpg', 0, 0, '', 1, 0, '2013-08-16 15:38:59', '2013-08-16 15:37:52'),
+(146, 'IM CEO, Bitch.', 0, 15, 5, 'Its our time !', 0, '', 0, 0, '', 1, 0, '2013-08-16 15:38:59', '2013-08-16 15:37:52'),
+(147, 'IM CEO, Bitch.', 0, 15, 5, 'Its our time !', 0, '', 0, 0, '', 1, 0, '2013-08-16 15:38:59', '2013-08-16 15:37:52'),
+(148, 'IM CEO, Bitch.', 0, 15, 5, 'Its our time !', 0, '', 0, 0, '', 1, 0, '2013-08-16 15:38:59', '2013-08-16 15:37:52'),
+(149, 'IM CEO, Bitch.', 0, 15, 5, 'Its our time !', 0, '', 0, 0, '', 1, 0, '2013-08-16 15:38:59', '2013-08-16 15:37:52'),
+(150, 'IM CEO, Bitch.', 0, 15, 5, 'Its our time !', 0, '', 0, 0, '', 1, 0, '2013-08-16 15:38:59', '2013-08-16 15:37:52'),
+(151, 'IM CEO, Bitch.', 0, 15, 5, 'Its our time !', 0, '', 0, 0, '', 1, 0, '2013-08-16 15:38:59', '2013-08-16 15:37:52'),
+(152, 'IM CEO, Bitch.', 0, 15, 5, 'Its our time !', 0, '', 0, 0, '', 1, 0, '2013-08-16 15:38:59', '2013-08-16 15:37:52'),
+(153, 'IM CEO, Bitch.', 0, 15, 5, 'Its our time !', 0, '', 0, 0, '', 1, 0, '2013-08-16 15:38:59', '2013-08-16 15:37:52'),
+(154, 'IM CEO, Bitch.', 0, 15, 5, 'Its our time !', 0, '', 0, 0, '', 1, 0, '2013-08-16 15:38:59', '2013-08-16 15:37:52');
 
 -- --------------------------------------------------------
 
@@ -163,7 +175,7 @@ CREATE TABLE IF NOT EXISTS `tbl_user` (
   `status` int(1) NOT NULL,
   `anonym_questions` int(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=16 ;
 
 --
 -- Дамп данных таблицы `tbl_user`
@@ -173,31 +185,47 @@ INSERT INTO `tbl_user` (`id`, `email`, `password`, `firstname`, `lastname`, `res
 (3, 'barack.obama@gov.us', '$2a$12$ItAm0jVfq9ulBfb89HIunu/ZgMSu4OdLsmBoLQV4OzbRZPI.N3DpG', 'Barack', 'Obama', '', '', '', '', '', 'barack.obama', '0000-00-00', 0, 0, 0, 0, '2013-08-01 18:24:29', '2013-08-01 18:24:29', '0000-00-00 00:00:00', 1, 0),
 (4, 'daniel.grosu@hotmail.com', '$2a$12$tWiQ64YHFTLKtXOOg4xCNObGg9rjmjYxtWI8tbiWQ/z.e02zL81pa', 'Daniel', 'Grosu', '', '', '', '', 'Leave a question', 'ceo', '2013-01-01', 0, 2, 0, 0, '2013-08-08 10:33:35', '2013-08-12 11:07:07', '2013-08-12 16:31:54', 1, 1),
 (5, 'mark.zuckerberg@facebook.com', '$2a$12$.7Og6t.OWR2DsScoNv31du/iwTHGf70G0yCiRn3kOHYRibZiSHOX6', 'Mark', 'Zuckerberg', '', '', '', '', '', 'mark', '0000-00-00', 0, 0, 0, 0, '2013-08-12 12:44:46', '2013-08-12 12:44:46', '0000-00-00 00:00:00', 1, 1),
-(14, 'bill.gates@hotmail.com', '$2a$12$CU/Q5S83SeSUUlvrDcFr0eKdQsBcDhj9b/fbkxwfMTRCpiGvcD6rC', 'Bill', 'Gates', '', '', '', '', '', 'bill', '0000-00-00', 0, 0, 0, 0, '2013-08-12 12:56:42', '2013-08-12 12:56:42', '2013-08-12 10:58:26', 1, 1);
+(14, 'bill.gates@hotmail.com', '$2a$12$CU/Q5S83SeSUUlvrDcFr0eKdQsBcDhj9b/fbkxwfMTRCpiGvcD6rC', 'Bill', 'Gates', '', '', '', '', '', 'bill', '0000-00-00', 0, 0, 0, 0, '2013-08-12 12:56:42', '2013-08-12 12:56:42', '2013-08-12 10:58:26', 1, 1),
+(15, 'danielgrosu1998@gmail.com', '$2a$12$AXqz4xrpkmT5ElSYQCOYUuByRfsY75kEA1XuqQ3GQNoK4v7hVZoym', 'Daniel', 'Grosu', '', '', '', '', '', 'dan', '0000-00-00', 0, 0, 0, 0, '2013-08-16 15:32:15', '2013-08-16 15:38:59', '2013-08-16 13:36:30', 1, 1);
 
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `tbl_user_question_assigment`
+-- Структура таблицы `tbl_user_question_assignment`
 --
 
-CREATE TABLE IF NOT EXISTS `tbl_user_question_assigment` (
+CREATE TABLE IF NOT EXISTS `tbl_user_question_assignment` (
   `user_id` int(11) NOT NULL,
   `question_id` int(11) NOT NULL,
   PRIMARY KEY (`user_id`,`question_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Дамп данных таблицы `tbl_user_question_assignment`
+--
+
+INSERT INTO `tbl_user_question_assignment` (`user_id`, `question_id`) VALUES
+(15, 145),
+(15, 150);
+
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `tbl_user_user_assigment`
+-- Структура таблицы `tbl_user_user_assignment`
 --
 
-CREATE TABLE IF NOT EXISTS `tbl_user_user_assigment` (
+CREATE TABLE IF NOT EXISTS `tbl_user_user_assignment` (
   `user_1` int(11) NOT NULL,
   `user_2` int(11) NOT NULL,
   PRIMARY KEY (`user_1`,`user_2`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Дамп данных таблицы `tbl_user_user_assignment`
+--
+
+INSERT INTO `tbl_user_user_assignment` (`user_1`, `user_2`) VALUES
+(15, 5);
 
 -- --------------------------------------------------------
 

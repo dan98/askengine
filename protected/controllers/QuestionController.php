@@ -49,7 +49,7 @@ class QuestionController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('new','ignored','create','respond','ignore', 'delete', 'show', 'hide', 'hided','feed'),
+				'actions'=>array('new','ignored','create','respond','ignore', 'delete', 'show', 'hide', 'hided','feed', 'likes'),
 				'users'=>array('@'),
 			),
 			array('deny',  // deny all users
@@ -207,7 +207,8 @@ class QuestionController extends Controller
 	public function actionDelete($id)
 	{
 		$model = $this->loadModel($id);
-                User::model()->substractAnswer($model->to_id);
+                if($model->status == self::STATUS_RESPONDED)
+                    User::model()->substractAnswer($model->to_id);
                 $model->delete();
                 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
@@ -268,7 +269,8 @@ class QuestionController extends Controller
                 $criteria->condition = "t.status = :status AND {{user_user_assignment}}.user_1 = :user_1";
                 $criteria->order = 't.created_time DESC';
                 $criteria->params = array(':status'=>self::STATUS_RESPONDED, ':user_1'=>Yii::app()->user->id);
-                $criteria->with = array('receiver', 'receiver.image', 'likes_n');
+                $criteria->with = array('receiver', 'receiver.image', 'likes', 'liked');
+                $criteria->scopes = array('showed');
 		$dataProvider=new CActiveDataProvider('Question', array(
                     'criteria'=>$criteria,
                     'pagination'=>array(
@@ -277,6 +279,27 @@ class QuestionController extends Controller
                 ));
 		$this->render('feed',array(
 			'dataProvider'=>$dataProvider,
+		));
+	}
+        
+        public function actionLikes()
+	{
+                $criteria = new CDbCriteria;
+                $criteria->join = 'INNER JOIN `{{user_question_assignment}}` ON `t`.`id` = `{{user_question_assignment}}`.`question_id`';
+                $criteria->condition = "{{user_question_assignment}}.user_id = :user_id";
+                $criteria->order = '{{user_question_assignment}}.created_time DESC';
+                $criteria->params = array(':user_id'=>Yii::app()->user->id);
+                $criteria->with = array('receiver', 'receiver.image', 'likes');
+                $criteria->scopes = array('showed');
+		$dataProvider=new CActiveDataProvider('Question', array(
+                    'criteria'=>$criteria,
+                    'pagination'=>array(
+                        'pageSize'=>10,
+                    ),
+                ));
+		$this->render('likes',array(
+			'dataProvider'=>$dataProvider,
+                        'likedcheck'=>false
 		));
 	}
 

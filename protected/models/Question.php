@@ -53,15 +53,7 @@ class Question extends CActiveRecord
         /**
 	 * Here starts the callbacks.
 	 */
-            // Triggered before the model saves the data.
-            public function beforeSave()
-            {
-                if(parent::beforeSave())
-                {
-                    
-                }
-                return true;
-            }
+            
         /**
          * Here end the callbacks.
          */  
@@ -168,7 +160,8 @@ class Question extends CActiveRecord
                                     'image'
                                 ),
                     ),
-                    'likes_n'=>array(self::STAT, 'User', '{{user_question_assignment}}(question_id, user_id)')
+                    'likes'=>array(self::STAT, 'User', '{{user_question_assignment}}(question_id, user_id)'),
+                    'liked'=>array(self::STAT, 'User', '{{user_question_assignment}}(question_id, user_id)', 'condition'=>"user_id=".Yii::app()->user->id)
 		);
 	}
 

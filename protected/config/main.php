@@ -35,7 +35,7 @@ return array(
                     "providers" => array (
                         "facebook" => array ( 
                             "enabled" => true,
-                            "keys"    => array ( "id" => "183715505133537", "secret" => "f50af154c41ab4bceddb8bf87a0b5515" ),
+                            "keys"    => array ( "id" => "118691594972672", "secret" => "2d26ed337ce8b8ccb0f1eca070aa83d5" ),
                             "scope"   => "email,publish_stream,user_birthday, publish_actions, user_likes", 
                             "display" => "" 
                         )
@@ -85,6 +85,7 @@ return array(
                                     'class'=>'CFileLogRoute',
                                     'levels'=>'error, warning'
                             ),
+                            
                             array(
                                     'class'=>'ext.yii-debug-toolbar.yii-debug-toolbar.YiiDebugToolbarRoute',
                             )

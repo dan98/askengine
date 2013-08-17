@@ -26,6 +26,16 @@ class Like extends CActiveRecord
 	{
 		return '{{user_question_assignment}}';
 	}
+        
+        public function behaviors() 
+        {
+            return array(
+                'CTimestampBehavior' => array( // Sets create_time and update_time.
+                    'class' => 'zii.behaviors.CTimestampBehavior',
+                    'createAttribute' => 'created_time',
+                ),
+            );
+        }
 
 	/**
 	 * @return array relational rules.

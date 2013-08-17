@@ -19,6 +19,17 @@ class Follow extends CActiveRecord
 		return '{{user_user_assignment}}';
 	}
         
+        public function behaviors() 
+        {
+            return array(
+                'CTimestampBehavior' => array( // Sets create_time and update_time.
+                    'class' => 'zii.behaviors.CTimestampBehavior',
+                    'createAttribute' => 'created_time',
+                ),
+            );
+        }
+        
+        
         public function isFollowing($id)
         {
             $follow = $this->findByAttributes(array('user_1'=>Yii::app()->user->id, 'user_2'=>$id));
