@@ -1,3 +1,9 @@
+<?php  
+    $baseUrl = Yii::app()->baseUrl; 
+    $cs = Yii::app()->getClientScript();
+    $cs->registerScriptFile($baseUrl.'/js/jquery-ias.min.js');
+    $cs->registerScriptFile($baseUrl.'/js/ajax.js');
+?>
 <h1>Likes</h1><small>Here you find the questions you liked.</small>
 <div class="questions">
     <?php
@@ -19,12 +25,6 @@
     );
     ?>
 </div>
-<?php  
-  $baseUrl = Yii::app()->baseUrl; 
-  $cs = Yii::app()->getClientScript();
-  $cs->registerScriptFile($baseUrl.'/js/jquery-ias.min.js');
-  $cs->registerScriptFile($baseUrl.'/js/feed.js');
-?>
 <script>
 dislikelink = function(event){
     event.preventDefault();

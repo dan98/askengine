@@ -48,17 +48,24 @@ class User extends CActiveRecord
             public function beforeSave()
             {
                 // If on update we dont want new password, we check this:
-                if(empty($this->password) && empty($this->repeat_password) && !empty($this->initialPassword))
-                $this->password=$this->repeat_password=$this->initialPassword;
+                
 
                 if(parent::beforeSave())
                 {
+                        if($this->password == '' && $this->repeat_password == ''){
+                            $this->password=$this->repeat_password=$this->initialPassword;
+                            $this->setAttribute('password', $this->password);
+                        }
+
                         $this->setAttribute('firstname', ucfirst($this->firstname));
                         $this->setAttribute('lastname', ucfirst($this->lastname));
                         $this->setAttribute('birthday', $this->year . '-' . $this->month . '-' . $this->day);
                         $this->setAttribute('password', $this->encrypt($this->password));
-                        $this->setAttribute('status', 1);
-                        $this->setAttribute('anonym_questions', 1);
+                        if(!empty($this->password) && !empty($this->repeat_password)){
+                            $this->password=$this->repeat_password=$this->initialPassword;
+                            $this->setAttribute('password', $this->encrypt($this->password));
+                        }
+
                         
                 }
                 return true;
@@ -130,12 +137,16 @@ class User extends CActiveRecord
                         array('email', 'email'),
 			array('language', 'length', 'max'=>10),
 			array('username', 'length', 'max'=>16),    
-                        array('title', 'length', 'max'=>16),    
+                        array('title', 'length', 'max'=>30), 
+                        array('about', 'length', 'max'=>100), 
+                        array('website', 'length', 'max'=>50),
+                        array('residence', 'length', 'max'=>50), 
                         array('password, repeat_password', 'required', 'on'=>'insert'),
                         array('password, repeat_password', 'length', 'min'=>6, 'max'=>40),
                         array('password', 'compare', 'compareAttribute'=>'repeat_password'),
                         array('role, answers_n, likes_d, followers_n, created_time, updated_time, last_login_time, status, image_id, birthday, day, month, year','safe'),
-                        array('email, username','safe','on'=>'update')
+                        array('email, username','safe','on'=>'update'),
+                        array('gravatar', 'in', 'range'=>range(0, 1)),
                     );
 	}
 
@@ -175,6 +186,7 @@ class User extends CActiveRecord
 			'status' => 'Status',
 			'image_id' => 'Image',
 			'anonym_questions' => 'Anonym Questions',
+                        'gravatar' => 'Use gravatar'
 		);
 	}
 

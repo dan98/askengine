@@ -21,14 +21,10 @@ class UserController extends Controller
 		return array(
 			'postOnly + delete', // we only allow deletion via POST request
                         'mineOnly + update, delete',
+                        'allowAnonym + view',
                         'accessControl',
 		);
 	}
-        public function filterMineOnly($filterChain){
-            if(!Yii::app()->user->checkAccess('mineOnly', array('id' => $_GET['id'])))
-                throw new CHttpException(403,'Cant perform this action.');
-            $filterChain->run();
-        }
 	/**
 	 * Specifies the access control rules.
 	 * This method is used by the 'accessControl' filter.
@@ -101,7 +97,6 @@ class UserController extends Controller
                     $id = Yii::app()->user->id;
                 }
                 
-                
                 // Question ActiveRecord
                 $q=new Question('create');
 
@@ -109,15 +104,19 @@ class UserController extends Controller
 		{
                         if(Yii::app()->user->isGuest)
                             $this->redirect(array('user/login'));
-			$q->attributes=$_POST['Question'];
-                        $user = User::model()->findByPk($q->to_id);
-                        if(empty($user))
-                            throw new CHttpException(403,'Unexistent user.');
-                        if($user->anonym_questions == 0 && $_POST['Question']['anonym'] != 0)
-                           throw new CHttpException(403,'This user doesnt accept anonym questions.');
-
-                        $q->setAttribute('from_id', Yii::app()->user->id);
-                        $q->setAttribute('status', 0);
+                        
+                        $q->to_id = $_POST['Question']['to_id'];
+                        $q->question_text = $_POST['Question']['question_text'];
+                        $q->from_id = Yii::app()->user->id;
+                        $q->status = 0;
+                        $q->hide = 0;
+                        
+                        if(isset($_POST['Question']['anonym']))
+                        {
+                            $q->anonym = $_POST['Question']['anonym'];
+                            if($q->anonym == 2)
+                                $q->anonym_custom = $_POST['Question']['anonym_custom'];
+                        }
                         
 			if($q->save())
 				$this->redirect(array('view','id'=>$id));
@@ -126,7 +125,8 @@ class UserController extends Controller
                 $criteria = new CDbCriteria;
                 $criteria->params = array(':id'=>$id);
                 $criteria->condition = 'to_id=:id';
-                $criteria->with = array('likes', 'liked');
+                $criteria->order = 'updated_time Desc';
+                $criteria->with = Yii::app()->user->isGuest ? array('likes') : array('likes', 'liked');
                 $criteria->scopes = array('showed', 'responded');
 		$dataProvider=new CActiveDataProvider('Question', array(
                     'criteria'=>$criteria,
@@ -186,8 +186,6 @@ class UserController extends Controller
 	{
 		$model=$this->loadModel($id);
 
-		// Uncomment the following line if AJAX validation is needed
-                $this->performAjaxValidation($model);
                 $model->initialPassword = $model->password;
                 $model->password = null;
 		if(isset($_POST['User']))

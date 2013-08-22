@@ -1,4 +1,10 @@
-<div class="questions">
+<?php  
+    $baseUrl = Yii::app()->baseUrl; 
+    $cs = Yii::app()->getClientScript();
+    $cs->registerScriptFile($baseUrl.'/js/jquery-ias.min.js');
+    $cs->registerScriptFile($baseUrl.'/js/ajax.js');
+?>
+<h1>Hided</h1><small>Here you can browse the qas you hided.</small><br />
 <?php
 $this->widget('zii.widgets.CListView', array(
         'id' => 'QuestionList',
@@ -15,11 +21,4 @@ $this->widget('zii.widgets.CListView', array(
         )
     )
 );
-?>
-</div>
-<?php  
-  $baseUrl = Yii::app()->baseUrl; 
-  $cs = Yii::app()->getClientScript();
-  $cs->registerScriptFile($baseUrl.'/js/jquery-ias.min.js');
-  $cs->registerScriptFile($baseUrl.'/js/feed.js');
 ?>

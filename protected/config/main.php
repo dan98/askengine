@@ -5,6 +5,7 @@
 
 // This is the main Web application configuration. Any writable
 // CWebApplication properties can be configured here.
+Yii::setPathOfAlias('bootstrap', dirname(__FILE__).'/../extensions/bootstrap');
 return array(
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
 	'name'=>'Querify',
@@ -36,22 +37,31 @@ return array(
                         "facebook" => array ( 
                             "enabled" => true,
                             "keys"    => array ( "id" => "118691594972672", "secret" => "2d26ed337ce8b8ccb0f1eca070aa83d5" ),
-                            "scope"   => "email,publish_stream,user_birthday, publish_actions, user_likes", 
+                            "scope"   => "email,publish_stream,user_birthday, publish_actions, user_likes, user_about_me", 
                             "display" => "" 
                         )
                     )
                 )
             ),
-
+            'onBeginRequest' => function () {
+                if (!Yii::app()->user->isGuest) {
+                        Yii::app()->defaultController = 'question';
+                }else{
+                        Yii::app()->defaultController = 'user/login';
+                }
+            },
 	// application components
 	'components'=>array(
 		'user'=>array(
 			// enable cookie-based authentication
 			'allowAutoLogin'=>true,
-                        'loginUrl' => array('/user/login'),
+                        'loginUrl' => '/',
                         'returnUrl' => '/',
                         'class' => 'WebUser',
 		),
+                'bootstrap'=>array(
+                    'class'=>'bootstrap.components.Bootstrap',
+                ),
 		'urlManager'=>array(
 			'urlFormat'=>'path',
 			'showScriptName'=>false,
@@ -60,8 +70,7 @@ return array(
                                 '<id:\d+>'=>'user/view/',
 				'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
 				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
-				''=>'/question/',
-                                '/me'=>'user/view'
+                                '/me'=>'/user/view'
 			),
 		),
 		'db'=>array(

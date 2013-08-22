@@ -57,6 +57,8 @@ class Follow extends CActiveRecord
             if(!User::model()->findByPk($id) === null)
                 throw new CHttpException(404, 'User to follow not found.');
             $model = $this->findByAttributes(array('user_1'=>Yii::app()->user->id, 'user_2'=>$id));
+            if(empty($model))
+                throw new CHttpException(404, 'You dont follow this user.');
             if($model->delete())
                 return true;
             else

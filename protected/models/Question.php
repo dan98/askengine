@@ -136,9 +136,12 @@ class Question extends CActiveRecord
                         array('answer_text', 'required', 'on'=>'update'),
 			array('question_video_id, from_id, answer_text, answer_video_id, likes_n, status, updated_time, created_time', 'safe', 'on'=>'create'),
                         array('question_video_id, from_id, question_text, to_id, answer_video_id, likes_n, status, anonym, updated_time, created_time, anonym_custom', 'safe', 'on'=>'update'),
+                        array('question_text, answer_text, anonym', 'required', 'on'=>'self'),
+                        array('question_video_id, from_id, to_id, answer_video_id, likes_n, status, updated_time, created_time', 'safe', 'on'=>'self'),
                         array('to_id, hide', 'numerical', 'integerOnly'=>true),
                         array('anonym', 'in', 'range'=>$this->getAnonymRange()),
-                        array('anonym_custom', 'length', 'min'=>5, 'max'=>30, 'tooShort'=>'At least 5 characters','tooLong'=>'Max 30')
+                        array('anonym_custom', 'length', 'min'=>5, 'max'=>30, 'tooShort'=>'At least 5 characters','tooLong'=>'Max 30'),
+                        array('image', 'file', 'allowEmpty'=>true,'types'=>'jpg, gif, png'),
                     );
 	}
 

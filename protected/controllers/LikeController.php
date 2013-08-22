@@ -8,7 +8,7 @@ class LikeController extends Controller
 	}
         
         
-	public function actionLike($id)
+	public function actionCreateLike($id)
 	{
             if(Like::model()->createLike($id)){
                 $url = Yii::app()->createAbsoluteUrl('like/dislike/', array('ajax'=>1, 'id'=>$id));

@@ -1,5 +1,12 @@
-<h1>Feed</h1><small>Here you can read the qas of people you follow.</small>
-<div class="questions">
+<?php  
+    $baseUrl = Yii::app()->baseUrl; 
+    $cs = Yii::app()->getClientScript();
+    $cs->registerScriptFile($baseUrl.'/js/ajax.js');
+?>
+<div class="page-header">
+    <h1>Feed</h1>
+    <small>Here you can read the qas of people you follow.</small>
+</div>
 <?php
 $this->widget('zii.widgets.CListView',array(
         'id' => 'QuestionList',
@@ -16,11 +23,4 @@ $this->widget('zii.widgets.CListView',array(
         )
     )
 );
-?>
-</div>
-<?php  
-  $baseUrl = Yii::app()->baseUrl; 
-  $cs = Yii::app()->getClientScript();
-  $cs->registerScriptFile($baseUrl.'/js/jquery-ias.min.js');
-  $cs->registerScriptFile($baseUrl.'/js/feed.js');
 ?>

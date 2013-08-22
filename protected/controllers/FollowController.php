@@ -11,8 +11,18 @@ class FollowController extends Controller
 	public function actionCreateFollow($id)
 	{
             if(Follow::model()->createFollow($id)){
-                $url = Yii::app()->createAbsoluteUrl('follow/unFollow/', array('ajax'=>1, 'id'=>$id));
-                echo CHtml::link('unfollow',$url, array('class'=>'unfollow-link')); 
+                $url = Yii::app()->createAbsoluteUrl('follow/createFollow/', array('ajax'=>1, 'id'=>$id));
+                
+                $this->widget('bootstrap.widgets.TbButton', array(
+                    'label'=>'unfollow',
+                    'type'=>'danger',
+                    'size'=>'small',
+                    'htmlOptions'=>array(
+                        'href'=>$url,
+                        'class'=>'unfollow-link'
+                    ),
+                    'buttonType'=>'button'
+                ));
             }
 	}
 
@@ -20,7 +30,17 @@ class FollowController extends Controller
 	{
             if(Follow::model()->unFollow($id)){
                 $url = Yii::app()->createAbsoluteUrl('follow/createFollow/', array('ajax'=>1, 'id'=>$id));
-                echo CHtml::link('follow',$url, array('class'=>'follow-link'));
+                
+                $this->widget('bootstrap.widgets.TbButton', array(
+                    'label'=>'follow',
+                    'type'=>'primary',
+                    'size'=>'small',
+                    'htmlOptions'=>array(
+                        'href'=>$url,
+                        'class'=>'follow-link'
+                    ),
+                    'buttonType'=>'button'
+                ));
             }
 	}
 

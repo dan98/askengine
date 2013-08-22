@@ -67,7 +67,13 @@ class DefaultController extends Controller {
 				if (isset($_POST['User'])) {
 					//Save the form
 					$user->attributes = $_POST['User'];
-
+                                        if (isset($identity->userData)) {
+                                            $user->email = $identity->userData->email;
+                                            $user->day = $identity->userData->birthDay;
+                                            $user->month = $identity->userData->birthMonth;
+                                            $user->year = $identity->userData->birthYear;
+                                            $user->gravatar = 1;
+                                        }
 					if ($user->validate() && $user->save()) {
 						if ($this->module->withYiiUser == true) {
 							$profile = new Profile();
@@ -84,13 +90,12 @@ class DefaultController extends Controller {
 					} // } else { do nothing } => the form will get redisplayed
 				} else {
 					//Display the form with some entries prefilled if we have the info.
-					if (isset($identity->userData->email)) {
-						$user->email = $identity->userData->email;
-						$email = explode('@', $user->email);
-						$user->username = $email[0];
+					if (isset($identity->userData)) {
+						$user->firstname = $identity->userData->firstName;
+                                                $user->lastname = $identity->userData->lastName;
+                                                $user->about = $identity->userData->description;
 					}
-				}
-
+                                }
 				$this->render('createUser', array(
 					'user' => $user,
 				));

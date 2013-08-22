@@ -2,9 +2,9 @@ ul.hybridauth-providerlist  {
 	list-style-type: none;
 }
 
-ul.hybridauth-providerlist li {
-	float:left;
-	text-decoration: none;
+.hybridauth-provider {
+    margin-left: 10px;
+    margin-top: 1px;
 }
 
 .hybridauth-providerlist li.active {

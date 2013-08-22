@@ -8,7 +8,7 @@
  */
 
 // Preload kohana image library
-
+Yii::import('ext.yii-easyimage.drivers.ImageKit');
 class EasyImage extends CApplicationComponent
 {
 
@@ -34,7 +34,7 @@ class EasyImage extends CApplicationComponent
 	public function __construct($file = null, $driver = null)
 	{
 		if ($file) {
-			return $this->_image = Image::factory($this->detectPath($file), $driver ? $driver : $this->driver);
+			return $this->_image = ImageKit::factory($this->detectPath($file), $driver ? $driver : $this->driver);
 		}
 	}
 
@@ -64,7 +64,7 @@ class EasyImage extends CApplicationComponent
 
 	public function image()
 	{
-		if ($this->_image instanceof Image) {
+		if ($this->_image instanceof ImageKit) {
 			return $this->_image;
 		} else {
 			throw new CException('Don\'t have image');
@@ -82,10 +82,10 @@ class EasyImage extends CApplicationComponent
 
 	private function _doThumbOf($file, $newFile, $params)
 	{
-		if ($file instanceof Image) {
+		if ($file instanceof ImageKit) {
 			$this->_image = $file;
 		} else {
-			$this->_image = Image::factory($this->detectPath($file), $this->driver);
+			$this->_image = ImageKit::factory($this->detectPath($file), $this->driver);
 		}
 		foreach ($params as $key => $value) {
 			switch ($key) {
@@ -205,7 +205,7 @@ class EasyImage extends CApplicationComponent
 		}
 
 		// Create and caching thumb by params
-		$image = Image::factory($this->detectPath($file), $this->driver);
+		$image = ImageKit::factory($this->detectPath($file), $this->driver);
 		$originWidth = $image->width;
 		$originHeight = $image->height;
 		$result = $this->_doThumbOf($image, $cacheFile, $params);
@@ -268,7 +268,7 @@ class EasyImage extends CApplicationComponent
 		if ($watermark instanceof EasyImage) {
 			$watermark = $watermark->image();
 		} elseif (is_string($watermark)) {
-			$watermark = Image::factory(dirname(Yii::app()->basePath) . $watermark);
+			$watermark = ImageKit::factory(dirname(Yii::app()->basePath) . $watermark);
 		}
 		return $this->image()->watermark($watermark, $offset_x, $offset_y, $opacity);
 	}

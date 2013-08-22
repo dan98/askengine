@@ -38,7 +38,7 @@ class RemoteUserIdentity extends CBaseUserIdentity {
 		if ($adapter->isUserConnected()) {
 			$this->_adapter = $adapter;
 			$this->loginProviderIdentifier = $this->_adapter->getUserProfile()->identifier;
-
+                        $this->userData = $this->_adapter->getUserProfile();
 			$user = HaLogin::getUser($this->loginProvider, $this->loginProviderIdentifier);
 			
 			if ($user == null) {

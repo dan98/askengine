@@ -29,7 +29,7 @@
 	</div>
 
 	<div class="row buttons">
-            <?php echo $form->hiddenField($model,'to_id',array('value'=>2)); ?>
+            <?php echo $form->hiddenField($model,'to_id',array('value'=>15)); ?>
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
 	</div>
 

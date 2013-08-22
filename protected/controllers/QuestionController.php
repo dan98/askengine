@@ -71,6 +71,47 @@ class QuestionController extends Controller
         
         public function actionNew()
         {
+            // Question ActiveRecord
+            $q=new Question('self');
+
+            if(isset($_POST['Question']))
+            {
+                    if(Yii::app()->user->isGuest)
+                        $this->redirect(array('user/login'));
+                    print_r($_POST['Question']);
+                    $q->attributes = $_POST['Question'];
+                    $q->from_id = $q->to_id = Yii::app()->user->id;
+                    $q->status = 1;
+                    if(CUploadedFile::getInstance($q,'image'))
+                        {
+                            $uploadedFile = CUploadedFile::getInstance($q,'image');
+                            $rnd = rand(0,9999);
+                            $fileName = "{$rnd}-{$uploadedFile}";  // random number + file name
+                            $q->image = $fileName;
+                        }
+                        if($q->hide != 1){
+                            User::model()->addAnswer(Yii::app()->user->id);
+                        }
+                    if(isset($_POST['Question']['anonym']))
+                    {
+                        $q->anonym = $_POST['Question']['anonym'];
+                        if($q->anonym == 2)
+                            $q->anonym_custom = $_POST['Question']['anonym_custom'];
+                    }
+
+                    if($q->save()){
+                         if(isset($uploadedFile))
+                            {
+                                $uploadedFile->saveAs(dirname(Yii::app()->getBasePath())."\images\\".$fileName);
+                                Yii::import('ext.yii-easyimage.drivers.ImageKit');
+                                $image = ImageKit::factory("images/".$fileName);
+                                $image->resize(300, 300);
+                                $image->save("images-thumb/".$fileName);
+                            }
+                            $this->redirect(array('/me'));
+                    }
+            }
+            
             $dataProvider=new CActiveDataProvider('Question', array(
                 'criteria'=>array(
                     'condition' => 'status = :status AND to_id = :to_id',
@@ -83,7 +124,8 @@ class QuestionController extends Controller
             ));
 
             $this->render('new',array(
-                'dataProvider'=>$dataProvider
+                'dataProvider'=>$dataProvider,
+                'q'=>$q
             ));
             
         }
@@ -165,9 +207,6 @@ class QuestionController extends Controller
 	{
 		$model=$this->loadModel($id);
 
-		// Uncomment the following line if AJAX validation is needed
-		$this->performAjaxValidation($model);
-
 		if(isset($_POST['Question']))
 		{
 			$model->attributes=$_POST['Question'];
@@ -191,7 +230,8 @@ class QuestionController extends Controller
                                 $image->resize(300, 300);
                                 $image->save("images-thumb/".$fileName);
                             }
-                        }
+                        }else
+                            throw new CHttpException(500, 'Error');
                 }
                 if(!isset($_GET['ajax']))
                     $this->render('respond',array(
@@ -267,7 +307,7 @@ class QuestionController extends Controller
                 $criteria = new CDbCriteria;
                 $criteria->join = 'INNER JOIN `{{user_user_assignment}}` ON `t`.`to_id` = `{{user_user_assignment}}`.`user_2`';
                 $criteria->condition = "t.status = :status AND {{user_user_assignment}}.user_1 = :user_1";
-                $criteria->order = 't.created_time DESC';
+                $criteria->order = 't.updated_time ASC';
                 $criteria->params = array(':status'=>self::STATUS_RESPONDED, ':user_1'=>Yii::app()->user->id);
                 $criteria->with = array('receiver', 'receiver.image', 'likes', 'liked');
                 $criteria->scopes = array('showed');

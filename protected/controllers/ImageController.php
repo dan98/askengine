@@ -28,7 +28,7 @@ class ImageController extends Controller
 	{
 		return array(
 			array('allow',
-				'actions'=>array('avatar'),
+				'actions'=>array('avatar', 'identicon'),
 				'users'=>array('@'),
 			),
 			array('deny',  // deny all users
@@ -36,7 +36,15 @@ class ImageController extends Controller
 			),
 		);
 	}
-
+        
+        
+        function actionIdenticon()
+        {
+            Yii::import('ext.identicon.identicon');
+            $identicon = new identicon;
+                    $identicon->identicon_build('Querify','',true,30,$write=false,$random=false);
+        }
+        
 	/**
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
@@ -60,11 +68,11 @@ class ImageController extends Controller
                     
                     if($model->save())
                     {
-                        $uploadedFile->saveAs(dirname(Yii::app()->getBasePath())."\avatar\\".$fileName);
-                        Yii::import('ext.yii-easyimage.drivers.ImageKit');
-                        $image = ImageKit::factory("avatar/".$fileName);
+                        $uploadedFile->saveAs(dirname(Yii::app()->getBasePath())."/avatar/".$fileName);
+                        Yii::import('ext.yii-easyimage.EasyImage');
+                        $image = new EasyImage("avatar/".$fileName);
                         $image->crop($_POST['Image']['w'], $_POST['Image']['h'], $_POST['Image']['x1'], $_POST['Image']['y1']);
-                        $image->resize(100, 100);
+                        $image->resize(80, 80);
                         $image->save("avatar-thumb/".$fileName);
                         $this->redirect('/');
                     }

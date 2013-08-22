@@ -60,7 +60,7 @@ class CWebApplication extends CApplication
 	/**
 	 * @return string the route of the default controller, action or module. Defaults to 'site'.
 	 */
-	public $defaultController='site';
+	public $defaultController='question';
 	/**
 	 * @var mixed the application-wide layout. Defaults to 'main' (relative to {@link getLayoutPath layoutPath}).
 	 * If this is false, then no layout will be used.
