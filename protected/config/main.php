@@ -70,7 +70,14 @@ return array(
                                 '<id:\d+>'=>'user/view/',
 				'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
 				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
-                                '/me'=>'/user/view'
+                                '/me'=>'/user/view',
+                                '/following'=>'/user/following',
+                                '/login'=>'/user/login',
+                                '/logout'=>'/user/logout',
+                                '/register'=>'/user/create',
+                                '/new'=>'/question/new',
+                                '/answers'=>'/question/answers',
+                                '/hided'=>'/question/hided',
 			),
 		),
 		'db'=>array(
@@ -94,10 +101,10 @@ return array(
                                     'class'=>'CFileLogRoute',
                                     'levels'=>'error, warning'
                             ),
-                            
                             array(
-                                    'class'=>'ext.yii-debug-toolbar.yii-debug-toolbar.YiiDebugToolbarRoute',
-                            )
+                                'class'=>'application.extensions.yii-debug-toolbar.yii-debug-toolbar.YiiDebugToolbarRoute',
+                                'ipFilters'=>array('localhost'),
+                            ),
                         ),
 		),
 	),
@@ -108,4 +115,5 @@ return array(
 		// this is used in contact page
 		'adminEmail'=>'webmaster@example.com',
 	),
+                    
 );

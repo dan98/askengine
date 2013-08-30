@@ -87,7 +87,19 @@ class Time {
 	* @return boolean True if date is in this month
 	*/
 	public static function isThisMonth($date) {
-		return date('m Y',$date) == date('m Y', time());
+            return date('m Y',$date) == date('m Y', time());
+	}
+        
+        /**
+	* Returns true if given date is this minute
+	*
+	* @param string $date Unix timestamp
+	* @return boolean True if date is this minute
+	*/
+	public static function isThisMinute($date) {
+            $class = date_create($date);
+            $now = date_create();
+            return date_format($class,'Y-m-d H:i') == date_format($class,'Y-m-d H:i');
 	}
 	
 	/**
@@ -227,36 +239,33 @@ class Time {
 			if ($years > 0) {
 				// years and months and days
 				$relativeDate .= ($relativeDate ? ', ' : '') . $years . ' ' . ($years==1 ? 'year':'years');
-				$relativeDate .= $months > 0 ? ($relativeDate ? ', ' : '') . $months . ' ' . ($months==1 ? 'month':'months') : '';
-				$relativeDate .= $weeks > 0 ? ($relativeDate ? ', ' : '') . $weeks . ' ' . ($weeks==1 ? 'week':'weeks') : '';
-				$relativeDate .= $days > 0 ? ($relativeDate ? ', ' : '') . $days . ' ' . ($days==1 ? 'day':'days') : '';
 			} elseif (abs($months) > 0) {
 				// months, weeks and days
 				$relativeDate .= ($relativeDate ? ', ' : '') . $months . ' ' . ($months==1 ? 'month':'months');
-				$relativeDate .= $weeks > 0 ? ($relativeDate ? ', ' : '') . $weeks . ' ' . ($weeks==1 ? 'week':'weeks') : '';
-				$relativeDate .= $days > 0 ? ($relativeDate ? ', ' : '') . $days . ' ' . ($days==1 ? 'day':'days') : '';
 			} elseif (abs($weeks) > 0) {
 				// weeks and days
 				$relativeDate .= ($relativeDate ? ', ' : '') . $weeks . ' ' . ($weeks==1 ? 'week':'weeks');
-				$relativeDate .= $days > 0 ? ($relativeDate ? ', ' : '') . $days . ' ' . ($days==1 ? 'day':'days') : '';
 			} elseif (abs($days) > 0) {
 				// days and hours
 				$relativeDate .= ($relativeDate ? ', ' : '') . $days . ' ' . ($days==1 ? 'day':'days');
-				$relativeDate .= $hours > 0 ? ($relativeDate ? ', ' : '') . $hours . ' ' . ($hours==1 ? 'hour':'hours') : '';
 			} elseif (abs($hours) > 0) {
 				// hours and minutes
 				$relativeDate .= ($relativeDate ? ', ' : '') . $hours . ' ' . ($hours==1 ? 'hour':'hours');
-				$relativeDate .= $minutes > 0 ? ($relativeDate ? ', ' : '') . $minutes . ' ' . ($minutes==1 ? 'minute':'minutes') : '';
 			} elseif (abs($minutes) > 0) {
 				// minutes only
 				$relativeDate .= ($relativeDate ? ', ' : '') . $minutes . ' ' . ($minutes==1 ? 'minute':'minutes');
 			} else {
 				// seconds only
-				$relativeDate .= ($relativeDate ? ', ' : '') . $seconds . ' ' . ($seconds==1 ? 'second':'seconds');
+                                if(self::isThisMinute($dateTime)){
+                                    $relativeDate .= 'just now';
+                                    $backwards = true;
+                                }else{
+                                    $relativeDate .= ($relativeDate ? ', ' : '') . $seconds . ' ' . ($seconds==1 ? 'second':'seconds');
+                                }
 			}
 
 			if (!$backwards) {
-				$relativeDate = sprintf('%s ago', $relativeDate);
+                            $relativeDate = sprintf('%s ago', $relativeDate);
 			}
 		}
 		return $relativeDate;

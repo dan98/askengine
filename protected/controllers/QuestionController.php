@@ -12,60 +12,73 @@ class QuestionController extends Controller
         
         const HIDE_TRUE = 1;
         const HIDE_FALSE = 0;
-	/**
-	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
-	 * using two-column layout. See 'protected/views/layouts/column2.php'.
-	 */
-	public $layout='//layouts/column2';
+        
+        const SEEN = 1;
+        const NOT_SEEN = 0;
+                
+	public $layout='//layouts/page';
         public $defaultAction='feed';
 
 	/**
-	 * @return array action filters
-	 */
+        * Returns.
+        */
 	public function filters()
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-			'postOnly + delete, ignore, show, hide', // we only allow deletion via POST request
-                        'iAmTheReceiver + respond, ignore, delete, show, hide'
+			'postOnly + respond, ignore, delete, hide, show', // we only allow deletion via POST request
+                        'iAmTheReceiver + respond, ignore, delete, hide, show'
 		);
 	}
         
-        public function filterIAmTheReceiver($filterChain){
-            if(!Yii::app()->user->checkAccess('iAmTheReceiver', array('id' => $_GET['id'])))
-                throw new CHttpException(403,'Cant perform this action.');
-            $filterChain->run();
-        }
-	/**
-	 * Specifies the access control rules.
-	 * This method is used by the 'accessControl' filter.
-	 * @return array access control rules
-	 */
 	public function accessRules()
 	{
 		return array(
-			array('allow',  // allow all users to perform 'index' and 'view' actions
+			array('allow',
 				'actions'=>array('view'),
 				'users'=>array('*'),
 			),
-			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('new','ignored','create','respond','ignore', 'delete', 'show', 'hide', 'hided','feed', 'likes'),
+			array('allow',
+				'actions'=>array('feed','ignored','answers','hided','likes', 'new', 'respond', 'delete', 'ignore', 'hide', 'show'),
 				'users'=>array('@'),
 			),
-			array('deny',  // deny all users
+			array('deny',
 				'users'=>array('*'),
 			),
 		);
 	}
-
-	/**
-	 * Displays a particular model.
-	 * @param integer $id the ID of the model to be displayed
-	 */
-	public function actionView($id)
+        
+        
+        /**
+        * GET Pages. View, Feed, New, Ignored, Answers, Hided, Likes
+        */
+        
+        
+        public function actionView($id)
 	{
 		$this->render('view',array(
 			'model'=>$this->loadModel($id),
+		));
+	}
+        
+	public function actionFeed()
+	{
+                $criteria = new CDbCriteria;
+                $criteria->join = 'INNER JOIN `{{user_user_assignment}}` ON `t`.`to_id` = `{{user_user_assignment}}`.`user_2`';
+                $criteria->condition = "t.status = :status AND {{user_user_assignment}}.user_1 = :user_1";
+                $criteria->order = 't.updated_time ASC';
+                $criteria->params = array(':status'=>self::STATUS_RESPONDED, ':user_1'=>Yii::app()->user->id);
+                $criteria->with = array('receiver', 'receiver.image', 'likes', 'liked');
+                $criteria->scopes = array('showed');
+		$dataProvider=new CActiveDataProvider('Question', array(
+                    'criteria'=>$criteria,
+                    'pagination'=>array(
+                        'pageSize'=>10,
+                    ),
+                ));
+		$this->render('feed',array(
+			'dataProvider'=>$dataProvider,
+                        'user'=>User::model()->findByPk(Yii::app()->user->id)
 		));
 	}
         
@@ -125,7 +138,8 @@ class QuestionController extends Controller
 
             $this->render('new',array(
                 'dataProvider'=>$dataProvider,
-                'q'=>$q
+                'q'=>$q,
+                'user'=>User::model()->findByPk(Yii::app()->user->id)
             ));
             
         }
@@ -146,6 +160,26 @@ class QuestionController extends Controller
                 'dataProvider'=>$dataProvider
             ));
         }
+        
+        public function actionAnswers()
+        {
+            $dataProvider=new CActiveDataProvider('Question', array(
+                'criteria'=>array(
+                    'condition' => 'status = :status AND from_id = :from_id AND seen = :seen',
+                    'order' => 'created_time DESC',
+                    'params' => array(':status'=>self::STATUS_RESPONDED, ':from_id'=>Yii::app()->user->id, ':seen'=>self::NOT_SEEN)
+                ),
+                'pagination'=>array(
+                    'pageSize'=>10,
+                ),
+            ));
+            $this->render('answers',array(
+                'dataProvider'=>$dataProvider
+            ));
+            Question::model()->updateAll(array('seen'=>self::SEEN), 'from_id = '.Yii::app()->user->id);
+            
+        }
+        
         public function actionHided()
         {
             $dataProvider=new EActiveDataProvider('Question', array(
@@ -164,45 +198,33 @@ class QuestionController extends Controller
                 'dataProvider'=>$dataProvider
             ));
         }
-
-	/**
-	 * Creates a new model.
-	 * If creation is successful, the browser will be redirected to the 'view' page.
-	 */
-	public function actionCreate()
+        
+        public function actionLikes()
 	{
-		$model=new Question;
-
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
-
-		if(isset($_POST['Question']))
-		{
-                        $model->attributes=$_POST['Question'];
-                        
-                        $user = User::model()->findByPk($model->to_id);
-                        if(empty($user))
-                            throw new CHttpException(403,'Unexistent user.');
-                        if($user->anonym_questions == 0 && $_POST['Question']['anonym'] != self::ANONYM_FALSE)
-                            throw new CHttpException(403,'This user doesnt accept anonym questions.');
-                        $model->setAttribute('from_id', Yii::app()->user->id);
-                        $model->setAttribute('status', 0);
-                        $model->setAttribute('hide', 0);
-			
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
-		}
-
-		$this->render('create',array(
-			'model'=>$model,
+                $criteria = new CDbCriteria;
+                $criteria->join = 'INNER JOIN `{{user_question_assignment}}` ON `t`.`id` = `{{user_question_assignment}}`.`question_id`';
+                $criteria->condition = "{{user_question_assignment}}.user_id = :user_id";
+                $criteria->order = '{{user_question_assignment}}.created_time DESC';
+                $criteria->params = array(':user_id'=>Yii::app()->user->id);
+                $criteria->with = array('receiver', 'receiver.image', 'likes');
+                $criteria->scopes = array('showed');
+		$dataProvider=new CActiveDataProvider('Question', array(
+                    'criteria'=>$criteria,
+                    'pagination'=>array(
+                        'pageSize'=>10,
+                    ),
+                ));
+		$this->render('likes',array(
+			'dataProvider'=>$dataProvider,
+                        'likedcheck'=>false
 		));
 	}
+        
+        
+        /**
+        * POST Actions. Respond, Delete, Ignore, Show, Hide
+        */
 
-	/**
-	 * Updates a particular model.
-	 * If update is successful, the browser will be redirected to the 'view' page.
-	 * @param integer $id the ID of the model to be updated
-	 */
 	public function actionRespond($id)
 	{
 		$model=$this->loadModel($id);
@@ -239,11 +261,6 @@ class QuestionController extends Controller
                     ));
 	}
 
-	/**
-	 * Deletes a particular model.
-	 * If deletion is successful, the browser will be redirected to the 'admin' page.
-	 * @param integer $id the ID of the model to be deleted
-	 */
 	public function actionDelete($id)
 	{
 		$model = $this->loadModel($id);
@@ -255,9 +272,7 @@ class QuestionController extends Controller
 		if(!isset($_GET['ajax']))
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('question/'));
 	}
-        /**
-	 * Ignores the question by attributing it the status STATUS_IGNORED;
-	 */
+        
 	public function actionIgnore($id)
 	{
                     $model = Question::model()->findByPk($id);
@@ -268,6 +283,7 @@ class QuestionController extends Controller
                     if(!isset($_GET['ajax']))
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('question/'));
         }
+        
         public function actionHide($id)
 	{
                     $model = Question::model()->findByPk($id);
@@ -284,6 +300,7 @@ class QuestionController extends Controller
                     }else
                         throw new CHttpException('400', 'This question is already hided');
         }
+        
         public function actionShow($id)
 	{
                     $model = Question::model()->findByPk($id);
@@ -300,55 +317,10 @@ class QuestionController extends Controller
                     }else
                         throw new CHttpException('400', 'This question is already hided');
         }
-
-
-	public function actionFeed()
-	{
-                $criteria = new CDbCriteria;
-                $criteria->join = 'INNER JOIN `{{user_user_assignment}}` ON `t`.`to_id` = `{{user_user_assignment}}`.`user_2`';
-                $criteria->condition = "t.status = :status AND {{user_user_assignment}}.user_1 = :user_1";
-                $criteria->order = 't.updated_time ASC';
-                $criteria->params = array(':status'=>self::STATUS_RESPONDED, ':user_1'=>Yii::app()->user->id);
-                $criteria->with = array('receiver', 'receiver.image', 'likes', 'liked');
-                $criteria->scopes = array('showed');
-		$dataProvider=new CActiveDataProvider('Question', array(
-                    'criteria'=>$criteria,
-                    'pagination'=>array(
-                        'pageSize'=>10,
-                    ),
-                ));
-		$this->render('feed',array(
-			'dataProvider'=>$dataProvider,
-		));
-	}
         
-        public function actionLikes()
-	{
-                $criteria = new CDbCriteria;
-                $criteria->join = 'INNER JOIN `{{user_question_assignment}}` ON `t`.`id` = `{{user_question_assignment}}`.`question_id`';
-                $criteria->condition = "{{user_question_assignment}}.user_id = :user_id";
-                $criteria->order = '{{user_question_assignment}}.created_time DESC';
-                $criteria->params = array(':user_id'=>Yii::app()->user->id);
-                $criteria->with = array('receiver', 'receiver.image', 'likes');
-                $criteria->scopes = array('showed');
-		$dataProvider=new CActiveDataProvider('Question', array(
-                    'criteria'=>$criteria,
-                    'pagination'=>array(
-                        'pageSize'=>10,
-                    ),
-                ));
-		$this->render('likes',array(
-			'dataProvider'=>$dataProvider,
-                        'likedcheck'=>false
-		));
-	}
-
+        
 	/**
-	 * Returns the data model based on the primary key given in the GET variable.
-	 * If the data model is not found, an HTTP exception will be raised.
-	 * @param integer $id the ID of the model to be loaded
-	 * @return Question the loaded model
-	 * @throws CHttpException
+	 * Underground
 	 */
 	public function loadModel($id)
 	{
@@ -357,11 +329,7 @@ class QuestionController extends Controller
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
 	}
-
-	/**
-	 * Performs the AJAX validation.
-	 * @param Question $model the model to be validated
-	 */
+        
 	protected function performAjaxValidation($model)
 	{
 		if(isset($_POST['ajax']) && $_POST['ajax']==='question-form')

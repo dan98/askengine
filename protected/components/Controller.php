@@ -37,5 +37,10 @@ class Controller extends CController{
         }
         $filterChain->run();
     }
+    public function filterIAmTheReceiver($filterChain){
+        if(!Yii::app()->user->checkAccess('iAmTheReceiver', array('id' => $_GET['id'])))
+            throw new CHttpException(403,'Cant perform this action.');
+        $filterChain->run();
+    }
 
 } 

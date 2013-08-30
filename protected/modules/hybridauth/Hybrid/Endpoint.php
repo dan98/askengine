@@ -172,7 +172,7 @@ class Hybrid_Endpoint {
 		try {
 			Hybrid_Logger::info( "Endpoint: call adapter [{$provider_id}] loginFinish() " );
 
-			$hauth->adapter->loginFinish(); 
+			$hauth->adapter->loginFinish();
 		}
 		catch( Exception $e ){
 			Hybrid_Logger::error( "Exception:" . $e->getMessage(), $e );

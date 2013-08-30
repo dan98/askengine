@@ -342,16 +342,26 @@
       jqXHR.setRequestHeader('X-Referer', ($.support.pjax)?window.location.href:window.location.href.replace('/#!', ''));
 	  $settings = settings;
       this.trigger('start.pjax', [jqXHR, $settings]);
-      $("#page").animate({opacity:0.25}, 200);
+      $(document).skylo('start');
+      var skylotimeout1 = setTimeout(function(){
+            $(document).skylo('set',20);
+      },700);
+      var skylotimeout2 = setTimeout(function(){
+            $(document).skylo('set',50);
+      },1000);
+       $("#yii_bootstrap_collapse_0").collapse('hide');
     }
     options.error = function(jqXHR, textStatus, errorThrown){
       this.trigger('error.pjax', [jqXHR, textStatus, errorThrown, $settings]);
-      if ( textStatus !== 'abort' )
-        window.location = options.url;
+      if(textStatus !== 'abort'){
+            window.location = options.url;
+            $(document).skylo('abort')
+        }
     }
     options.complete = function(jqXHR, textStatus){
       this.trigger('complete.pjax', [jqXHR, textStatus, $settings]);
-      $("#page").animate({opacity:1}, 200);
+      $(document).skylo('end');
+      refreshbinds();
     }
 
     // Cancel the current request if we're already pjaxing
@@ -359,6 +369,7 @@
     if ( xhr && xhr.readyState < 4) {
       xhr.onreadystatechange = $.noop;
       xhr.abort();
+      $(document).skylo('abort')
     }
 
     pjax.xhr = $.ajax(options);

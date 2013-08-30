@@ -17,8 +17,25 @@ function refreshbinds(){
     $('.ignore-link').bind('click', ignorelink);
     $('.delete-link').unbind('click');
     $('.delete-link').bind('click', deletelink);
-   
+    $('button[type="submit"]')
+     .click(function () {
+         var btn = $(this)
+         btn.button('loading')
+         setTimeout(function () {
+             btn.button('reset')
+         }, 5000)
+     });
 }
+
+var empty="";
+empty += "              <span class=\"empty\">";
+empty += "                  <div align=\"center\">";
+empty += "                    <div class=\"card\" style=\"padding-top:0;display:inline-block;margin-top:30px;\">";
+empty += "                        <h3 class=\"card-heading simple\">No new questions found<\/h3>";
+empty += "                    <\/div>";
+empty += "                <\/div>";
+empty += "                <\/span>";
+
 hideandshowlink = function(event){
     event.preventDefault();
     var url = $(this).attr('href');
@@ -100,9 +117,14 @@ deletelink = function(event){
     $.ajax({
         type:'POST',
         url: url,
-        context: $(this).parent(),
+        context: $(this).parent().parent(),
         success: function(){
-            $(this).parent().hide('slow');
+            $(this).parent().hide('slow', function() {
+                    if($('.items .card:not(:hidden)').length === 0)
+                    { 
+                        $('.items').html(empty)
+                    }
+                });
         },
         beforeSend:function(){
              $(this).html('deleting');
@@ -131,21 +153,30 @@ responselink = function(event){
     var url = $(this).attr('href');
     var form="";
     form += "<form id=\"question-form\" action=\""+url+"\" method=\"post\">";
-    form += " - <br/><textarea rows=\"6\" cols=\"34\" name=\"Question[answer_text]\" id=\"Question_answer_text\"><\/textarea>hide : <input name=\"Question[hide]\" id=\"Question_hide\" value=\"1\" type=\"checkbox\"><input id=\"image_file\" name=\"Question[image]\" type=\"file\">";
-    form += "<input type=\"submit\" name=\"yt0\" value=\"Respond\" id=\"respond-submit\">";
+    form += "<textarea rows=\"4\" cols=\"34\" name=\"Question[answer_text]\" id=\"Question_answer_text\"><\/textarea><input id=\"image_file\" name=\"Question[image]\" type=\"file\"><label class=\"checkbox\" style=\"display:inline-block;\" for=\"Question_hide\"><input name=\"User[hide]\" id=\"Question_hide\" value=\"1\" type=\"checkbox\">hide</label>";
+    form += "<div style=\"float:right\"> <button type=\"submit\" name=\"yt0\" data-loading-text=\"responding...\" id=\"respond-submit\" class=\"btn btn-primary\">Respond</button></div>";
     form += "<\/form>";
-    $(this).parent().parent().find('span').append('<div id="question-form-div">'+form+'</div>');
+    $(this).parent().parent().parent().find('.response-wrapper').append('<div id="question-form-div">'+form+'</div>');
+    refreshbinds();
     $("#question-form")
         .ajaxForm({
             url: $(this).attr("action"),
             type: 'post',
-            context: $(this).parent(),
+            context: $(this).parent().parent(),
             success: function(){
-                $(this).parent().hide('slow');
+                $(this).parent().hide('slow', function() {
+                    if($('.items .card:not(:hidden)').length === 0)
+                    { 
+                        $('.items').html(empty)
+                    }
+                });
                 $("#question-number").html(parseInt($("#question-number").html()) - 1);
             }
         });
 }
 $(function(){
     refreshbinds();
+    $(document).skylo({
+        state: 'info'
+    });
 });

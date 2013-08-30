@@ -96,6 +96,8 @@ class Hybrid_Providers_Facebook extends Hybrid_Provider_Model
 
 		// store facebook access token 
 		$this->token( "access_token", $this->api->getAccessToken() );
+                
+                
 	}
 
 	/**

@@ -1,40 +1,88 @@
-<div class="view" id="question-view-<?php echo $data->id; ?>">
-    
-    <span style="float:left">
-        <?php
+<div class="card" id="question-view-<?php echo $data->id; ?>">
+    <div class="card-heading image">
+        <div class="card-heading-header" style="display:block;">
+           <?php
             if(!isset($profile))
             {
-                echo CHtml::image($data->receiver->image == null ? '/avatar-thumb/no_avatar.png' : '/avatar-thumb/'.$data->receiver->image->image, $data->receiver->firstname." ".$data->receiver->lastname, array('width'=>50, 'height'=>50));
-                echo "<br />";
-                echo CHtml::link($data->receiver->firstname." ".$data->receiver->lastname, array('user/view/', $data->receiver->id));
+                if($data->receiver->gravatar){
+                    $this->widget('application.extensions.VGGravatarWidget.VGGravatarWidget', 
+                        array(
+                            'email' => $data->receiver->email,
+                            'hashed' => false, 
+                            'default' => 'identicon',                                                
+                            'size' => 46,
+                            'href' => '/'.$data->receiver->id,
+                            'rating' => 'PG',
+                            'htmlOptions' => array('alt' =>$data->receiver->firstname.' '.$data->receiver->lastname, 'style'=>'float:left;'),
+                        )
+                    );
+                }else{
+                    if($data->receiver->image)
+                    {
+                        $imghtml=CHtml::image('/avatar-thumb/'.$data->receiver->image->image, 'title', array('width'=>46, 'height'=>46, 'style'=>'float:left;'));
+                        echo CHtml::link($imghtml, array('/'.$data->receiver->id), array('ajaxlink' => 'link'));
+                    }
+                    else
+                    {
+                        $this->widget('application.extensions.VGGravatarWidget.VGGravatarWidget', 
+                            array(
+                                'email' => $data->receiver->email,
+                                'hashed' => false, 
+                                'default' => 'identicon',                                                
+                                'size' => 46,
+                                'href' => '/'.$data->receiver->id,
+                                'rating' => 'PG',
+                                'htmlOptions' => array('alt' =>$data->receiver->firstname.' '.$data->receiver->lastname, 'style'=>'float:left;'),
+                            )
+                        );
+                    }
+                }
             }
         ?>
-    </span>
-    
-    <span style="float:left">
-        - <?php echo CHtml::encode($data->question_text); ?>
-        <small>
-            <?php 
+            <h3><?php echo CHtml::encode($data->question_text); ?>
+                <span style="white-space:nowrap; margin-left: 6px;">
+                <?php 
+                    switch($data->anonym)
+                    {
+                        case 0 :echo CHtml::link($data->sender->firstname." ".$data->sender->lastname, array('/'.$data->sender->id)); break;
+                        case 1 :echo 'anonym'; break;
+                        case 2 :echo $data->anonym_custom; break;
+                    }
+                ?>
+                </span>
+            </h3>
+        </div>
+    </div>
+    <div class="card-body answer-text wrapword" style="margin-top:5px;">
+        <p><?php echo CHtml::encode($data->answer_text); ?></p>
+    </div>
+    <?php 
+        if($data->image)
+        {
+    ?>
+        <div class="card-media">
+            <?php     echo CHtml::image("/images/".$data->image, '',array('style'=>'width:100%;max-height:none;', 'onload'=>'ratio(this.id)', 'id'=>'qimage-'.$data->id)); ?>
+        </div>
+    <?php
+        }
+    ?>
+    <div class="card-actions" style="padding-bottom:4px; ">
+        <span style="float:left; color:#999;">
+        <?php 
+            echo Time::timeAgoInWords($data->updated_time); 
+        ?>
+        -
+        <?php 
             switch($data->anonym)
             {
-                case 0 :echo CHtml::link('('.$data->sender->firstname." ".$data->sender->lastname.')', array('user/view/', $data->sender->id)); break;
-                case 1 :echo '(anonym)'; break;
-                case 2 :echo '('.$data->anonym_custom.')'; break;
+                case 0 :echo CHtml::link($data->sender->firstname." ".$data->sender->lastname, array('/'.$data->sender->id)); break;
+                case 1 :echo 'anonym'; break;
+                case 2 :echo $data->anonym_custom; break;
             }
-            ?>
-        </small><br>
-        - <?php echo CHtml::encode($data->answer_text); ?><br />
-        <?php 
-           if($data->image)
-           {
-               echo CHtml::image("/images-thumb/".$data->image);
-           }
         ?>
-    </span>
-    
-    <div align="right" style="clear:both">
-        <small><?php echo Time::timeAgoInWords($data->updated_time); ?></small>
-        <?php
+        </span>
+        <span style="float:right;">
+                    <?php
            if($data->to_id == Yii::app()->user->id)
            {
                if($data->hide == 0)
@@ -49,7 +97,7 @@
                }
            }
         ?>
-        <span class="like-container">
+            <span class="like-container" style="color: #999;">
             <?php
             if(isset($likedcheck)){
                 $liked = true;
@@ -69,10 +117,11 @@
             }
             ?>
         </span>
-        <span class="like-num">
+        <span class="like-num" style="color: #999;">
             <?php 
                 echo $data->likes;
-            ?>
-        </span> likes
+            ?> likes
+        </span> 
+        </span>
     </div>
 </div>

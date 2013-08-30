@@ -1,7 +1,8 @@
+
 #page{
     margin-top: 30px;
-    padding-top: 30px;
-    padding: 19px;
+}
+.white-block{
     border: 1px solid #d8d8d8;
     background-color: #ffffff;
     border-top-width: 0;
@@ -12,6 +13,7 @@
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
+    padding: 20px 20px 13px 20px;
 }
 #sidebar{
     margin-top: 70px;
@@ -32,14 +34,13 @@
     color: #5a5a5a;
 }
 #sidebar{
+    display: inline-block;
     position: fixed;
     left:-180px;
-    width:200px;
     padding-left: 10px;
 }
 #page{
     overflow: hidden;
-    div
 }
 .well{
     background-color: #f1f1f1;
@@ -55,18 +56,25 @@
 }
 .view-user{
     float: left;
-    margin: -10px 20px 0 0;
+    margin: -6px 0px 0 6px;
     position: relative;
-    width: 200px;
+    width: 170px;
     line-height: 14px;
     letter-spacing:1px;
     filter: alpha(opacity=67);
     opacity: .67;
     color: #000;
 }
+.view-image img{
+border: 0;
+-webkit-border-radius: 50%;
+-moz-border-radius: 50%;
+border-radius: 50%;
+}
 .view-user h3{
     color:#000;
     opacity: .91;
+    margin:0px;
 }
 .view-buttons{
     float: right;
@@ -91,7 +99,177 @@
     }
 }
 
+@media (min-width: 768px) and (max-width: 979px) {
+
+    .card.hovercard {
+        width:40%!important;
+    }   
+}
+@media (min-width: 979px) and (max-width: 1200px) {
+.card.hovercard {
+        width:40%!important;
+    }  }
+.login-well{
+    float:right;
+}
+@media(max-width: 767px){
+    .login-well{
+        float:none;
+        display:inline-block
+    }
+    .welcome{
+        display:none;
+    }
+    #page {
+        padding: 30px 0px 30px 0px!important;
+        margin-top: 46px!important;
+    }
+    .card.hovercard {
+            /* Firefox */
+            width: -moz-calc(100% - 20px)!important;
+            /* WebKit */
+            width: -webkit-calc(100% - 20px)!important;
+            /* Opera */
+            width: -o-calc(100% - 20px)!important;
+            /* Standard */
+            width: calc(100% - 20px)!important;
+    }
+}
+@media(max-width: 979px){
+    .navbar-fixed-top.navbar-absolute {
+        position: absolute;
+        margin: 0;
+    }
+    #page{
+        margin-top: 76px;
+    }
+}
+#sidebar{
+    position: fixed;
+    left:20px;
+    padding-left: 10px;
+}
 .sidebar-h-ul{
-    margin: 0px 10px 0px 0px;
+    margin: 0px 10px 20px 0px;
+    display:inline-block;
+}
+.badge-sidebar{
+    padding: 2px 4px;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 14px;
+    margin-left: 6px;
+    margin-top: 1px;
+    margin-bottom: 30px;
+    top:0px;
+    position: absolute;
+}
+.sidebar-h-ul-container{
+    position:  relative;
+}
+.wrapword{
+    white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    white-space: pre-wrap;       /* css-3 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    word-break: keep-all;
+    white-space: normal;
+}
+.answer-text{
+    margin-left:61px;
+}
+.navbar .nav>li>a {
+    max-width: none;
+}
+.btn-navbar{
+    height: 16px;
+    min-height: 16px;
+}
+.card .card-media {
+    padding: 0;
+    margin: 0;
+    margin-top: 15px;
+}
+@media (min-width: 980px) {
+    .page-container{
+        margin-left: 15%;
+        width: 77%;
+    }
+    #image-form .span4{
+        margin-left: 19px;
+    }
+}
+@media (min-width: 1200px) {
+    .page-container{
+        margin-left: 13%;
+        width: 77%;
+    }
+}
+@media (min-width: 600px) {
+    .view-user{
+        width: 300px;
+    }
+}
+.clear{
+    clear:both;
+}
+#question-form select{
+    margin-bottom: 0;
+    width:110px;
+}
+#question-form textarea{
+    /* Firefox */
+    width: -moz-calc(100% - 18px)!important;
+    /* WebKit */
+    width: -webkit-calc(100% - 18px)!important;
+    /* Opera */
+    width: -o-calc(100% - 18px)!important;
+    /* Standard */
+    width: calc(100% - 18px)!important;
+    
+    resize: none; 
+}
+.ask-card{
+    margin-top:-3px; border-radius: 0; padding-top: 0;
+}
+#user-settings div input[type="text"], #user-settings div textarea{
+    /* Firefox */
+    width: -moz-calc(100% - 18px)!important;
+    /* WebKit */
+    width: -webkit-calc(100% - 18px)!important;
+    /* Opera */
+    width: -o-calc(100% - 18px)!important;
+    /* Standard */
+    width: calc(100% - 18px)!important;
+}
+.card.hovercard {
+    padding-top: 10px;
+    overflow: visible;
+    float: left;
+    margin: 50px 10px 0px 10px;
+}
+.card.hovercard .info .desc{
+    height:70px;
+}
+body, html, .page-container{
+    height: 100%
+}
+.question_image{
     display: inline-block;
+}
+.question_image input{
+    width: 90px !important;
+    margin-top: 7px;
+}
+#Question_anonym_custom{
+    margin-top: 16px;
+        /* Firefox */
+    width: -moz-calc(100% - 18px)!important;
+    /* WebKit */
+    width: -webkit-calc(100% - 18px)!important;
+    /* Opera */
+    width: -o-calc(100% - 18px)!important;
+    /* Standard */
+    width: calc(100% - 18px)!important;
 }

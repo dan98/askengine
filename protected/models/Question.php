@@ -28,6 +28,9 @@ class Question extends CActiveRecord
         
         const HIDE_TRUE = 1;
         const HIDE_FALSE = 0;
+        
+        const SEEN = 1;
+        const NOT_SEEN = 0;
         /**
          * Retrieves a list of issue types
          * @return array an array of available issue types.
@@ -88,11 +91,21 @@ class Question extends CActiveRecord
                 'mine'=>array(
                     'condition'=>'to_id='.Yii::app()->user->id
                 ),
+                'fromme'=>array(
+                    'condition'=>'from_id='.Yii::app()->user->id
+                ),
+                
                 'hided'=>array(
                     'condition'=>'hide='.self::HIDE_TRUE
                 ),
                 'showed'=>array(
                     'condition'=>'hide='.self::HIDE_FALSE
+                ),
+                'seen'=>array(
+                    'condition'=>'seen='.self::SEEN
+                ),
+                'notseen'=>array(
+                    'condition'=>'seen='.self::NOT_SEEN
                 )
             );
         }

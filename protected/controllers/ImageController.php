@@ -6,7 +6,7 @@ class ImageController extends Controller
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
 	 */
-	public $layout='//layouts/column2';
+	public $layout='//layouts/page';
 
 	/**
 	 * @return array action filters
@@ -28,7 +28,7 @@ class ImageController extends Controller
 	{
 		return array(
 			array('allow',
-				'actions'=>array('avatar', 'identicon'),
+				'actions'=>array('avatar'),
 				'users'=>array('@'),
 			),
 			array('deny',  // deny all users
@@ -36,14 +36,6 @@ class ImageController extends Controller
 			),
 		);
 	}
-        
-        
-        function actionIdenticon()
-        {
-            Yii::import('ext.identicon.identicon');
-            $identicon = new identicon;
-                    $identicon->identicon_build('Querify','',true,30,$write=false,$random=false);
-        }
         
 	/**
 	 * Creates a new model.
@@ -54,28 +46,32 @@ class ImageController extends Controller
 		$model=new Image;  // this is my model related to table
                 if(isset($_POST['Image']))
                 {
-                    $rnd = rand(0,9999);  // generate random number between 0-9999
-                    
+                    $model->attributes = $_POST['Image'];
+                    if(CUploadedFile::getInstance($model,'image')){
 
-                    $uploadedFile=CUploadedFile::getInstance($model,'image');
-                    $fileName = "{$rnd}-{$uploadedFile}";  // random number + file name
-                    $model->image = $fileName;
-                    $model->user_id = Yii::app()->user->id;
-                    $current_image = Image::model()->findByAttributes(array('user_id' => Yii::app()->user->id));
-                   
-                    if($current_image)
-                        $current_image->delete();
-                    
-                    if($model->save())
-                    {
-                        $uploadedFile->saveAs(dirname(Yii::app()->getBasePath())."/avatar/".$fileName);
-                        Yii::import('ext.yii-easyimage.EasyImage');
-                        $image = new EasyImage("avatar/".$fileName);
-                        $image->crop($_POST['Image']['w'], $_POST['Image']['h'], $_POST['Image']['x1'], $_POST['Image']['y1']);
-                        $image->resize(80, 80);
-                        $image->save("avatar-thumb/".$fileName);
-                        $this->redirect('/');
-                    }
+                        $rnd = rand(0,9999);  // generate random number between 0-9999
+
+                        $uploadedFile=CUploadedFile::getInstance($model,'image');
+                        $fileName = "{$rnd}-{$uploadedFile}";  // random number + file name
+                        $model->image = $fileName;
+                        $model->user_id = Yii::app()->user->id;
+                        $current_image = Image::model()->findByAttributes(array('user_id' => Yii::app()->user->id));
+
+                        if($current_image)
+                            $current_image->delete();
+
+                        if($model->save())
+                        {
+                            $uploadedFile->saveAs(dirname(Yii::app()->getBasePath())."/avatar/".$fileName);
+                            Yii::import('ext.yii-easyimage.EasyImage');
+                            $image = new EasyImage("avatar/".$fileName);
+                            $image->crop($_POST['Image']['w'], $_POST['Image']['h'], $_POST['Image']['x1'], $_POST['Image']['y1']);
+                            $image->resize(80, 80);
+                            $image->save("avatar-thumb/".$fileName);
+                            $this->redirect('/me');
+                        }
+                    }else
+                        throw new CHttpException(500, 'No image found.');
                     
                 }
                 $this->render('avatar',array(

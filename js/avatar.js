@@ -26,12 +26,14 @@ function checkForm() {
 
 // update info by cropping (onChange and onSelect events handler)
 function updateInfo(e) {
-    $('#x1').val(e.x);
-    $('#y1').val(e.y);
-    $('#x2').val(e.x2);
-    $('#y2').val(e.y2);
-    $('#w').val(e.w);
-    $('#h').val(e.h);
+    
+    var ratio = parseInt($('#filedim').val())/parseInt($('#preview').css('width'));
+    $('#x1').val(e.x*ratio);
+    $('#y1').val(e.y*ratio);
+    $('#x2').val(e.x2*ratio);
+    $('#y2').val(e.y2*ratio);
+    $('#w').val(e.w*ratio);
+    $('#h').val(e.h*ratio);
 };
 
 // clear info by cropping (onRelease event handler)
@@ -96,7 +98,9 @@ function fileSelectHandler() {
                 bgOpacity: .3, // fade opacity
                 onChange: updateInfo,
                 onSelect: updateInfo,
-                onRelease: clearInfo
+                onRelease: clearInfo,
+                boxWidth: 300,
+                boxHeight: 500,
             }, function(){
 
                 // use the Jcrop API to get the real image size

@@ -52,19 +52,16 @@ class User extends CActiveRecord
 
                 if(parent::beforeSave())
                 {
-                        if($this->password == '' && $this->repeat_password == ''){
+                        if(empty($this->password) && empty($this->repeat_password)){
                             $this->password=$this->repeat_password=$this->initialPassword;
                             $this->setAttribute('password', $this->password);
+                        }else{
+                            $this->setAttribute('password', $this->encrypt($this->password));
                         }
 
                         $this->setAttribute('firstname', ucfirst($this->firstname));
                         $this->setAttribute('lastname', ucfirst($this->lastname));
                         $this->setAttribute('birthday', $this->year . '-' . $this->month . '-' . $this->day);
-                        $this->setAttribute('password', $this->encrypt($this->password));
-                        if(!empty($this->password) && !empty($this->repeat_password)){
-                            $this->password=$this->repeat_password=$this->initialPassword;
-                            $this->setAttribute('password', $this->encrypt($this->password));
-                        }
 
                         
                 }
@@ -88,6 +85,7 @@ class User extends CActiveRecord
         {
             $enc = NEW bCrypt();
             return $enc->hash($value);
+            throw '';
         }
         
 	/**
@@ -160,8 +158,10 @@ class User extends CActiveRecord
 		return array(
                     'image' => array(self::HAS_ONE, 'Image', 'user_id'),
                     'questions' => array(self::HAS_MANY, 'Question', 'to_id'),
-                    'following' => array(self::STAT, 'User', '{{user_user_assignment}}(user_1, user_2)'),
-                    'followers' => array(self::STAT, 'User', '{{user_user_assignment}}(user_2, user_1)'),
+                    'following_n' => array(self::STAT, 'User', '{{user_user_assignment}}(user_1, user_2)'),
+                    'followers_n' => array(self::STAT, 'User', '{{user_user_assignment}}(user_2, user_1)'),
+                    'following' => array(self::MANY_MANY, 'User', '{{user_user_assignment}}(user_1, user_2)'),
+                    
 		);
 	}
 

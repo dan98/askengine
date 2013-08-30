@@ -180,6 +180,8 @@ abstract class Hybrid_Provider_Model
 		Hybrid_Logger::info( "Enter [{$this->providerId}]::setUserConnected()" );
 		
 		Hybrid_Auth::storage()->set( "hauth_session.{$this->providerId}.is_logged_in", 1 );
+                
+                
 	}
 
 	// --------------------------------------------------------------------

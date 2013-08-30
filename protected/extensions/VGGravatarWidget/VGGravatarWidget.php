@@ -85,7 +85,12 @@ class VGGravatarWidget extends CWidget
 	 *
 	 */
 	public $rating = 'G';
-	
+        
+        /**
+	 * @var string - If isset the image will be rendered within an a tag.
+	 */
+        
+	public $href = null;
 	/**
 	 * @var array - any HTML options that will be passed to the IMG tag
 	 */
@@ -140,7 +145,10 @@ class VGGravatarWidget extends CWidget
 	 */
 	public function run()
 	{
-		echo CHtml::image(self::GRAVATAR_URL . $this->url, $this->htmlOptions['alt'], $this->htmlOptions);
+                if(empty($this->href))
+                    echo CHtml::image(self::GRAVATAR_URL . $this->url, $this->htmlOptions['alt'], $this->htmlOptions);
+                else
+                    echo CHtml::link(CHtml::image(self::GRAVATAR_URL . $this->url, $this->htmlOptions['alt'], $this->htmlOptions), $this->href);
 	}
 	
 }

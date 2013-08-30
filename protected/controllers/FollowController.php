@@ -15,7 +15,7 @@ class FollowController extends Controller
                 
                 $this->widget('bootstrap.widgets.TbButton', array(
                     'label'=>'unfollow',
-                    'type'=>'danger',
+                    'type'=>'warning',
                     'size'=>'small',
                     'htmlOptions'=>array(
                         'href'=>$url,
@@ -33,7 +33,7 @@ class FollowController extends Controller
                 
                 $this->widget('bootstrap.widgets.TbButton', array(
                     'label'=>'follow',
-                    'type'=>'primary',
+                    'type'=>'success',
                     'size'=>'small',
                     'htmlOptions'=>array(
                         'href'=>$url,
