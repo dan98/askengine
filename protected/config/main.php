@@ -89,7 +89,7 @@ return array(
 			'connectionString' => 'mysql:host=127.0.0.1;dbname=askengine',
 			'emulatePrepare' => true,
 			'username' => 'root',
-			'password' => '12121212',
+			'password' => 'root',
 			'charset' => 'utf8',
 			'tablePrefix' => 'tbl_',
                         'enableProfiling'=>true,
