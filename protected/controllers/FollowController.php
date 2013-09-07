@@ -11,7 +11,7 @@ class FollowController extends Controller
 	public function actionCreateFollow($id)
 	{
             if(Follow::model()->createFollow($id)){
-                $url = Yii::app()->createAbsoluteUrl('follow/createFollow/', array('ajax'=>1, 'id'=>$id));
+                $url = Yii::app()->createAbsoluteUrl('follow/unFollow/', array('ajax'=>1, 'id'=>$id));
                 
                 $this->widget('bootstrap.widgets.TbButton', array(
                     'label'=>'unfollow',

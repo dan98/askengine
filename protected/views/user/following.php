@@ -1,9 +1,3 @@
-<?php  
-    $baseUrl = Yii::app()->baseUrl; 
-    $cs = Yii::app()->getClientScript();
-    $cs->registerScriptFile($baseUrl.'/js/ajax.js');
-?>
-
 <div class="card" style="padding-top:0; margin-bottom:0px;">
     <h3 class="card-heading simple">Following</h3>
 </div>
@@ -11,7 +5,7 @@
     <div class="span10 offset1">
         <?php
             $this->widget('zii.widgets.CListView',array(
-                    'id' => 'FollowersList',
+                    'id' => 'followers',
                     'dataProvider' => new CActiveDataProvider('User', array(
                             'data'=>$user->following,
                     )),
@@ -20,17 +14,17 @@
                     'emptyText' => '
                     <div align="center">
                         <div class="card" style="padding-top:0;display:inline-block;margin-top:30px;">
-                            <h3 class="card-heading simple">You don\'t follow anybody, houston.</h3>
+                            <h3 class="card-heading simple">Don\'t follow anybody.</h3>
                         </div>
                     </div>
                     ',
                     'pager' => array(
-                        'class' => 'ext.infiniteScroll.IasPager', 
+                        'class' => 'ext.ias.IasPager', 
                         'rowSelector'=>'.view', 
-                        'listViewId' => 'FollowersList',
+                        'listViewId' => 'followers',
                         'header' => '',
-                        'loaderText'=>'Loading...',
-                        'options' => array('history' => true, 'triggerPageTreshold' => 5, 'trigger'=>'Load more'),
+                        'loaderText'=>'Loading ...',
+                        'options' => array('history' => true, 'triggerPageTreshold' => 5, 'trigger'=>'More'),
                     )
                 )
             );

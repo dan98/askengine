@@ -145,6 +145,7 @@ class User extends CActiveRecord
                         array('role, answers_n, likes_d, followers_n, created_time, updated_time, last_login_time, status, image_id, birthday, day, month, year','safe'),
                         array('email, username','safe','on'=>'update'),
                         array('gravatar', 'in', 'range'=>range(0, 1)),
+                        array('anonym_questions', 'in', 'range'=>range(0, 1))
                     );
 	}
 

@@ -108,12 +108,6 @@
       });
     };
     
-    Plugin.prototype.abort = function () {
-        var that = this;
-        clearTimeout(skylotimeout1);
-        clearTimeout(skylotimeout2);
-        that.remove();
-    };
 
     Plugin.prototype.get = function(){
       return this._width;

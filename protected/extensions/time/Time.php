@@ -234,38 +234,32 @@ class Time {
 		$diff = $futureTime - $pastTime;
 
 		if ($diff > abs($now - strtotime($end))) {
-			$relativeDate = sprintf('on %s', date($format, $inSeconds));
+			$relativeDate = sprintf(' %s', date($format, $inSeconds));
 		} else {
 			if ($years > 0) {
-				// years and months and days
-				$relativeDate .= ($relativeDate ? ', ' : '') . $years . ' ' . ($years==1 ? 'year':'years');
+				$relativeDate .= ($years == 1 ? 'un' : $years) . ' ' . ($years==1 ? 'an':'ani');
 			} elseif (abs($months) > 0) {
-				// months, weeks and days
-				$relativeDate .= ($relativeDate ? ', ' : '') . $months . ' ' . ($months==1 ? 'month':'months');
+				$relativeDate .= ($months == 1 ? 'o' : $months) . ' ' . ($months==1 ? 'lună':'luni');
 			} elseif (abs($weeks) > 0) {
-				// weeks and days
-				$relativeDate .= ($relativeDate ? ', ' : '') . $weeks . ' ' . ($weeks==1 ? 'week':'weeks');
+				$relativeDate .= ($weeks == 1 ? 'o' : $weeks) . ' ' . ($weeks==1 ? 'săptămînă':'săptămîni');
 			} elseif (abs($days) > 0) {
-				// days and hours
-				$relativeDate .= ($relativeDate ? ', ' : '') . $days . ' ' . ($days==1 ? 'day':'days');
+				$relativeDate .= ($days == 1 ? 'o' : $days) . ' ' . ($days==1 ? 'zi':'zile');
 			} elseif (abs($hours) > 0) {
-				// hours and minutes
-				$relativeDate .= ($relativeDate ? ', ' : '') . $hours . ' ' . ($hours==1 ? 'hour':'hours');
+				$relativeDate .= ($hours == 1 ? 'o' : $hours) . ' ' . ($hours==1 ? 'oră':'ore');
 			} elseif (abs($minutes) > 0) {
-				// minutes only
-				$relativeDate .= ($relativeDate ? ', ' : '') . $minutes . ' ' . ($minutes==1 ? 'minute':'minutes');
+				$relativeDate .= ($minutes == 1 ? 'o' : $minutes) . ' ' . ($minutes==1 ? 'minută':'minute');
 			} else {
 				// seconds only
                                 if(self::isThisMinute($dateTime)){
-                                    $relativeDate .= 'just now';
+                                    $relativeDate .= 'numai ce';
                                     $backwards = true;
                                 }else{
-                                    $relativeDate .= ($relativeDate ? ', ' : '') . $seconds . ' ' . ($seconds==1 ? 'second':'seconds');
+                                    $relativeDate .= ($relativeDate ? ', ' : '') . $seconds . ' ' . ($seconds==1 ? 'secundă':'secunde');
                                 }
 			}
 
 			if (!$backwards) {
-                            $relativeDate = sprintf('%s ago', $relativeDate);
+                            $relativeDate = sprintf('acum %s', $relativeDate);
 			}
 		}
 		return $relativeDate;

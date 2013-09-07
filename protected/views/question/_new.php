@@ -1,11 +1,11 @@
-<div class="card" id="question-view-<?php echo $data->id; ?>">
+<div class="card">
     <div class="card-heading image">
         <div class="card-heading-header" style="display:block;">
            <?php
             if(!isset($profile))
             {
                 if($data->sender->gravatar){
-                    $this->widget('application.extensions.VGGravatarWidget.VGGravatarWidget', 
+                    $this->widget('ext.gravatar.Gravatar', 
                         array(
                             'email' => $data->sender->email,
                             'hashed' => false, 
@@ -19,12 +19,12 @@
                 }else{
                     if($data->sender->image)
                     {
-                        $imghtml=CHtml::image('/avatar-thumb/'.$data->sender->image->image, 'title', array('width'=>46, 'height'=>46, 'style'=>'float:left;'));
+                        $imghtml=CHtml::image('/avatar-thumb/'.$data->sender->image->image, $data->sender->firstname.' '.$data->sender->lastname, array('width'=>46, 'height'=>46, 'style'=>'float:left;'));
                         echo CHtml::link($imghtml, array('/'.$data->sender->id), array('ajaxlink' => 'link'));
                     }
                     else
                     {
-                        $this->widget('application.extensions.VGGravatarWidget.VGGravatarWidget', 
+                        $this->widget('ext.gravatar.Gravatar', 
                             array(
                                 'email' => $data->sender->email,
                                 'hashed' => false, 
@@ -44,8 +44,8 @@
                 <?php 
                     switch($data->anonym)
                     {
-                        case 0 :echo CHtml::link($data->sender->firstname." ".$data->sender->lastname, array('/'.$data->sender->id)); break;
-                        case 1 :echo 'anonym'; break;
+                        case 0 :echo CHtml::link($data->sender->firstname.' '.$data->sender->lastname, array('/'.$data->sender->id)); break;
+                        case 1 :echo 'Anonym'; break;
                         case 2 :echo $data->anonym_custom; break;
                     }
                 ?>
@@ -60,15 +60,6 @@
         <span style="float:left; color:#999;">
         <?php 
             echo Time::timeAgoInWords($data->created_time); 
-        ?>
-        -
-        <?php 
-            switch($data->anonym)
-            {
-                case 0 :echo CHtml::link($data->sender->firstname." ".$data->sender->lastname, array('/'.$data->sender->id)); break;
-                case 1 :echo 'anonym'; break;
-                case 2 :echo $data->anonym_custom; break;
-            }
         ?>
         </span>
         <span style="float:right;">
@@ -85,7 +76,7 @@
             }
             echo ' ';
             $url = Yii::app()->createUrl('question/respond/', array('ajax'=>1, 'id'=>$data->id));
-            echo CHtml::link('response',$url, array('class'=>'response-link'));    
+            echo CHtml::link('respond',$url, array('class'=>'response-link'));    
             ?>
         </span>
     </div>

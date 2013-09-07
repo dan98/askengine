@@ -1,19 +1,11 @@
 <?php
     $me = $model->id == Yii::app()->user->id ? true : false;
 ?>
-    
-<?php
-    $baseUrl = Yii::app()->baseUrl;
-    $cs = Yii::app()->getClientScript();
-    $cs->registerScriptFile($baseUrl.'/js/jquery-ias.min.js');
-    $cs->registerScriptFile($baseUrl.'/js/ajax.js');
-?>
-
 <div class="white-block">
     <div class="view-image" align='right'>
         <?php
             if($model->gravatar){
-                $this->widget('application.extensions.VGGravatarWidget.VGGravatarWidget', 
+                $this->widget('ext.gravatar.Gravatar', 
                     array(
                         'email' => $model->email,
                         'hashed' => false, 
@@ -21,15 +13,15 @@
                         'size' => 80,
                         'href' => '/'.$model->id,
                         'rating' => 'PG',
-                        'htmlOptions' => array('alt' =>$model->firstname.' '.$model->lastname, 'style'=>'float:left;'),
+                        'htmlOptions' => array('alt' => $model->firstname.' '.$model->lastname, 'style'=>'float:left;'),
                     )
                );
             }else{
                 if($model->image){
-                    $imghtml=CHtml::image('/avatar-thumb/'.$model->image->image, 'title', array('width'=>80, 'height'=>80));
+                    $imghtml=CHtml::image('/avatar-thumb/'.$model->image->image, $model->firstname.' '.$model->lastname, array('width'=>80, 'height'=>80));
                     echo CHtml::link($imghtml, array('/'.$model->id), array('ajaxlink' => 'link'));
                 }else{
-                    $this->widget('application.extensions.VGGravatarWidget.VGGravatarWidget', 
+                    $this->widget('ext.gravatar.Gravatar', 
                         array(
                             'email' => $model->email,
                             'hashed' => false, 
@@ -52,11 +44,9 @@
         <?php
         if ($me)
             echo CHtml::link(
-                '<button class="btn btn-success btn-small" name="yt0" type="button">update</button>',
+                '<button class="btn btn-success btn-small" name="yt0" type="button">settings</button>',
                 $this->createAbsoluteUrl('user/update', array('id' => $model->id)),
-                array(
-                    'ajaxlink' => 'true'
-                )
+                array('ajaxlink' => 'true')
             );
         else
             if (!Follow::model()->isFollowing($model->id)){
@@ -95,7 +85,7 @@
         <div class="card ask-card">
             <h3 class="card-heading simple">
                 <?php
-                    echo !empty($model->title) ? $model->title : 'Ask me a question';
+                    echo !empty($model->title) ? $model->title : 'Întreabă-mă';
                 ?>
             </h3>
             <div class="card-body">
@@ -116,7 +106,7 @@
                     <div style="display:none;" class="display">
                         
                         <?php
-                            $options = $model->anonym_questions == 1 ? array('options' => array('0' => array('selected' => true)), 'disabled' => true) : null;
+                            $options = $model->anonym_questions == 1 && !$me ? array('options' => array('0' => array('selected' => true)), 'disabled' => true) : null;
                             
                             echo $form->dropDownList($q, 'anonym', $q->getAnonymOptions(), $options);
                         ?>
@@ -127,14 +117,14 @@
                             $("#Question_anonym")
                                     .change(function() {
                                 if ($('#Question_anonym option:selected').attr('value') == 2) {
-                                    $('#custom_anonym').html('<?php echo $form->textFieldRow($q, 'anonym_custom'); ?>');
+                                    $('#custom_anonym').html('<?php echo $form->textField($q, 'anonym_custom', array('id'=>'custom_anonym', 'style'=>'margin-bottom:-2px')); ?>');
                                 } else {
                                     $('#custom_anonym').html('');
                                 }
                             });
 
                             if ($('#Question_anonym option:selected').attr('value') == 2) {
-                                $('#custom_anonym').html('<?php echo $form->textField($q, 'anonym_custom'); ?>');
+                                $('#custom_anonym').html('<?php echo $form->textField($q, 'anonym_custom', array('id'=>'custom_anonym', 'style'=>'margin-bottom:-2px')); ?>');
                             }
                         </script>
 
@@ -148,22 +138,22 @@
         </div>
         <?php
             $this->widget('zii.widgets.CListView', array(
-                    'id' => 'QuestionList',
+                    'id' => 'questions',
                     'dataProvider' => $questions,
                     'itemView' => '//question/_feed',
-                    'template' => '{items} {pager}',
+                    'template' => '{items}{pager}',
                     'emptyText' => '
                         <div class="card" style="padding-top:0;">
-                            <h3 class="card-heading simple">No answers, houston.</h3>
+                            <h3 class="card-heading simple">Nimic</h3>
                         </div>
                     ',
                     'pager' => array(
-                        'class' => 'ext.infiniteScroll.IasPager',
+                        'class' => 'ext.ias.IasPager',
                         'rowSelector' => '.card',
-                        'listViewId' => 'QuestionList',
+                        'listViewId' => 'questions',
                         'header' => '',
-                        'loaderText' => 'Loading...',
-                        'options' => array('history' => true, 'triggerPageTreshold' => 5, 'trigger' => 'Load more'),
+                        'loaderText' => 'Loading ...',
+                        'options' => array('history' => true, 'triggerPageTreshold' => 5, 'trigger' => 'More'),
                     )
                 )
             );

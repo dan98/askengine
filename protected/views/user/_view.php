@@ -2,7 +2,7 @@
    <div class="avatar">
     <?php
         if($data->gravatar){
-            $this->widget('application.extensions.VGGravatarWidget.VGGravatarWidget', 
+            $this->widget('ext.gravatar.Gravatar', 
                 array(
                     'email' => $data->email,
                     'hashed' => false, 
@@ -10,15 +10,15 @@
                     'size' => 80,
                     'href' => '/'.$data->id,
                     'rating' => 'PG',
-                    'htmlOptions' => array('alt' =>$data->firstname.' '.$data->lastname,  'width'=>"80", 'height'=>"80"),
+                    'htmlOptions' => array('alt' => $data->firstname.' '.$data->lastname,  'width'=>"80", 'height'=>"80"),
                 )
            );
         }else{
             if($data->image){
-                $imghtml=CHtml::image('/avatar-thumb/'.$data->image->image, 'title', array('width'=>80, 'height'=>80));
+                $imghtml=CHtml::image('/avatar-thumb/'.$data->image->image, $data->firstname.' '.$data->lastname, array('width'=>80, 'height'=>80));
                 echo CHtml::link($imghtml, array('/'.$data->id), array('ajaxlink' => 'link'));
             }else{
-                $this->widget('application.extensions.VGGravatarWidget.VGGravatarWidget', 
+                $this->widget('ext.gravatar.Gravatar', 
                     array(
                         'email' => $data->email,
                         'hashed' => false, 
@@ -26,7 +26,7 @@
                         'size' => 80,
                         'href' => '/'.$data->id,
                         'rating' => 'PG',
-                        'htmlOptions' => array('alt' =>$data->firstname.' '.$data->lastname,  'width'=>"80", 'height'=>"80"),
+                        'htmlOptions' => array('alt' => $data->firstname.' '.$data->lastname,  'width'=>"80", 'height'=>"80"),
                     )
                 );
             }
@@ -35,7 +35,7 @@
    </div>
    <div class="info">
       <div class="title">
-         <h3 style="margin:-10px 0 0 0;"><?php echo $data->firstname . ' ' . $data->lastname ?></h3>
+         <h3 style="margin:0;color: #000;opacity: .91;"><?php echo $data->firstname . ' ' . $data->lastname ?></h3>
       </div>
       <div class="desc"><?php echo $data->about; ?></div>
    </div>
@@ -43,11 +43,9 @@
       <?php
         if ($data->id == Yii::app()->user->id)
             echo CHtml::link(
-                '<button class="btn btn-success btn-small" name="yt0" type="button">update</button>',
+                '<button class="btn btn-success btn-small" name="yt0" type="button">setări</button>',
                 $this->createAbsoluteUrl('user/update', array('id' => $data->id)),
-                array(
-                    'ajaxlink' => 'true'
-                )
+                array('ajaxlink' => 'true')
             );
         else
             if (!Follow::model()->isFollowing($data->id)){

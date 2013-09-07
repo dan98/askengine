@@ -6,8 +6,9 @@ class ErrorController extends Controller
         
 	/**
 	 * Controller that handels errors.
-	 */
-	/**
+         * 
+         * 
+    
 	 * This is the action to handle external exceptions.
 	 */
 	public function actionIndex()

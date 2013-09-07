@@ -65,11 +65,11 @@ class QuestionController extends Controller
 	{
                 $criteria = new CDbCriteria;
                 $criteria->join = 'INNER JOIN `{{user_user_assignment}}` ON `t`.`to_id` = `{{user_user_assignment}}`.`user_2`';
-                $criteria->condition = "t.status = :status AND {{user_user_assignment}}.user_1 = :user_1";
-                $criteria->order = 't.updated_time ASC';
-                $criteria->params = array(':status'=>self::STATUS_RESPONDED, ':user_1'=>Yii::app()->user->id);
-                $criteria->with = array('receiver', 'receiver.image', 'likes', 'liked');
-                $criteria->scopes = array('showed');
+                $criteria->condition = "{{user_user_assignment}}.user_1 = :user_1";
+                $criteria->order = 't.updated_time DESC';
+                $criteria->params = array(':user_1'=>Yii::app()->user->id);
+                $criteria->with = array('receiver', 'receiver.image', 'likes', 'liked', 'sender');
+                $criteria->scopes = array('showed', 'responded');
 		$dataProvider=new CActiveDataProvider('Question', array(
                     'criteria'=>$criteria,
                     'pagination'=>array(
@@ -78,8 +78,7 @@ class QuestionController extends Controller
                 ));
 		$this->render('feed',array(
 			'dataProvider'=>$dataProvider,
-                        'user'=>User::model()->findByPk(Yii::app()->user->id)
-		));
+                ));
 	}
         
         public function actionNew()
@@ -91,7 +90,6 @@ class QuestionController extends Controller
             {
                     if(Yii::app()->user->isGuest)
                         $this->redirect(array('user/login'));
-                    print_r($_POST['Question']);
                     $q->attributes = $_POST['Question'];
                     $q->from_id = $q->to_id = Yii::app()->user->id;
                     $q->status = 1;
@@ -125,11 +123,11 @@ class QuestionController extends Controller
                     }
             }
             
-            $dataProvider=new CActiveDataProvider('Question', array(
+            $dataProvider=new EActiveDataProvider('Question', array(
+                'scopes'=>array('new', 'mine'),
                 'criteria'=>array(
-                    'condition' => 'status = :status AND to_id = :to_id',
-                    'order' => 'created_time DESC',
-                    'params' => array(':status'=>self::STATUS_NEW, ':to_id'=>Yii::app()->user->id)
+                    'order' => 't.created_time DESC',
+                    'with' => array('liked', 'likes', 'sender')
                 ),
                 'pagination'=>array(
                     'pageSize'=>10,
@@ -138,18 +136,17 @@ class QuestionController extends Controller
 
             $this->render('new',array(
                 'dataProvider'=>$dataProvider,
-                'q'=>$q,
-                'user'=>User::model()->findByPk(Yii::app()->user->id)
+                'q'=>$q
             ));
             
         }
         public function actionIgnored()
         {
-            $dataProvider=new CActiveDataProvider('Question', array(
+            $dataProvider=new EActiveDataProvider('Question', array(
+                'scopes'=>array('ignored', 'mine'),
                 'criteria'=>array(
-                    'condition' => 'status = :status AND to_id = :to_id',
-                    'order' => 'created_time DESC',
-                    'params' => array(':status'=>self::STATUS_IGNORED, ':to_id'=>Yii::app()->user->id)
+                    'order' => 't.created_time DESC',
+                    'with' => array('liked', 'likes', 'sender', 'receiver.image', 'receiver')
                 ),
                 'pagination'=>array(
                     'pageSize'=>10,
@@ -163,18 +160,19 @@ class QuestionController extends Controller
         
         public function actionAnswers()
         {
-            $dataProvider=new CActiveDataProvider('Question', array(
+            $dataProvider=new EActiveDataProvider('Question', array(
+                'scopes'=>array('responded', 'notseen', 'fromme'),
                 'criteria'=>array(
-                    'condition' => 'status = :status AND from_id = :from_id AND seen = :seen',
-                    'order' => 'created_time DESC',
-                    'params' => array(':status'=>self::STATUS_RESPONDED, ':from_id'=>Yii::app()->user->id, ':seen'=>self::NOT_SEEN)
+                    'order' => 't.created_time DESC',
+                    'with' => array('liked', 'likes', 'sender', 'receiver.image', 'receiver')
                 ),
                 'pagination'=>array(
                     'pageSize'=>10,
                 ),
             ));
             $this->render('answers',array(
-                'dataProvider'=>$dataProvider
+                'dataProvider'=>$dataProvider,
+                'user'=>User::model()->findByPk(Yii::app()->user->id)
             ));
             Question::model()->updateAll(array('seen'=>self::SEEN), 'from_id = '.Yii::app()->user->id);
             
@@ -183,11 +181,10 @@ class QuestionController extends Controller
         public function actionHided()
         {
             $dataProvider=new EActiveDataProvider('Question', array(
-                'scopes'=>array('hided', 'responded'),
+                'scopes'=>array('hided', 'responded', 'mine'),
                 'criteria'=>array(
-                    'condition' => 'to_id = :to_id',
-                    'order' => 'created_time DESC',
-                    'params' => array(':to_id'=>Yii::app()->user->id)
+                    'order' => 't.created_time DESC',
+                    'with' => array('liked', 'likes', 'sender', 'receiver.image', 'receiver')
                 ),
                 'pagination'=>array(
                     'pageSize'=>10,
@@ -222,7 +219,11 @@ class QuestionController extends Controller
         
         
         /**
-        * POST Actions. Respond, Delete, Ignore, Show, Hide
+         * 
+         * 
+         * POST Actions. Respond, Delete, Ignore, Show, Hide
+         * 
+         * 
         */
 
 	public function actionRespond($id)
@@ -298,7 +299,7 @@ class QuestionController extends Controller
                             $url = Yii::app()->createAbsoluteUrl('question/show/', array('ajax'=>1, 'id'=>$model->id));
                             echo CHtml::link('show',$url, array('class'=>'show-link'));
                     }else
-                        throw new CHttpException('400', 'This question is already hided');
+                        throw new CHttpException('400', 'Această întrebare este deja ascunsă.');
         }
         
         public function actionShow($id)

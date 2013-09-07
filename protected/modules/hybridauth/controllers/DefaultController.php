@@ -128,6 +128,8 @@ class DefaultController extends Controller {
 	 */
 	public function actionCallback() {
 		require dirname(__FILE__) . '/../Hybrid/Endpoint.php';
+                if(isset($_GET['state']))
+                $_GET['state'] = str_replace(array('#', '_', '='), '', $_GET['state']);
 		Hybrid_Endpoint::process();
 	}
 	

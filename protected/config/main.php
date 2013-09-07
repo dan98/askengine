@@ -11,7 +11,7 @@ return array(
 	'name'=>'Querify',
 
 	// preloading 'log' component
-	'preload'=>array('log'),
+	'preload'=>array('log', 'debug'),
 
 	// autoloading model and component classes
 	'import'=>array(
@@ -78,13 +78,18 @@ return array(
                                 '/new'=>'/question/new',
                                 '/answers'=>'/question/answers',
                                 '/hided'=>'/question/hided',
+                                '/ignored'=>'/question/ignored',
+                                '/likes'=>'/question/likes',
 			),
 		),
+                'debug' => array(
+                    'class' => 'ext.debug.Yii2Debug',
+                ),
 		'db'=>array(
-			'connectionString' => 'mysql:host=localhost;dbname=askengine',
+			'connectionString' => 'mysql:host=127.0.0.1;dbname=askengine',
 			'emulatePrepare' => true,
 			'username' => 'root',
-			'password' => '',
+			'password' => '12121212',
 			'charset' => 'utf8',
 			'tablePrefix' => 'tbl_',
                         'enableProfiling'=>true,
@@ -100,13 +105,9 @@ return array(
                             array(
                                     'class'=>'CFileLogRoute',
                                     'levels'=>'error, warning'
-                            ),
-                            array(
-                                'class'=>'application.extensions.yii-debug-toolbar.yii-debug-toolbar.YiiDebugToolbarRoute',
-                                'ipFilters'=>array('localhost'),
-                            ),
+                            )
                         ),
-		),
+		)
 	),
 
 	// application-level parameters that can be accessed

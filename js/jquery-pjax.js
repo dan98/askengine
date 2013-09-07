@@ -342,20 +342,22 @@
       jqXHR.setRequestHeader('X-Referer', ($.support.pjax)?window.location.href:window.location.href.replace('/#!', ''));
 	  $settings = settings;
       this.trigger('start.pjax', [jqXHR, $settings]);
+      clearTimeout(skylotimeout1);
+        clearTimeout(skylotimeout2);
+        $(document).skylo('end');
       $(document).skylo('start');
       var skylotimeout1 = setTimeout(function(){
-            $(document).skylo('set',20);
-      },700);
+            $(document).skylo('set',30);
+      },100);
       var skylotimeout2 = setTimeout(function(){
-            $(document).skylo('set',50);
-      },1000);
+            $(document).skylo('set',70);
+      },200);
        $("#yii_bootstrap_collapse_0").collapse('hide');
     }
     options.error = function(jqXHR, textStatus, errorThrown){
       this.trigger('error.pjax', [jqXHR, textStatus, errorThrown, $settings]);
       if(textStatus !== 'abort'){
             window.location = options.url;
-            $(document).skylo('abort')
         }
     }
     options.complete = function(jqXHR, textStatus){
@@ -472,9 +474,11 @@
             $($.container).html(data);
             $($.container).trigger('success.pjax', [data, textStatus, jqXHR, $settings]);
             $("#page").animate({opacity:1}, 200);
+            refreshbinds();
           },
           complete: function(jqXHR, textStatus){
             $($.container).trigger('complete.pjax', [jqXHR, textStatus, $settings]);
+            refreshbinds();
           },
           error: function(jqXHR, textStatus, errorThrown) {
             $($.container).trigger('error.pjax', [jqXHR, textStatus, errorThrown, $settings]);

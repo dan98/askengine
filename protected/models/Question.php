@@ -80,32 +80,32 @@ class Question extends CActiveRecord
         {
             return array(
                 'new'=>array(
-                    'condition'=>'status='.self::STATUS_NEW,
+                    'condition'=>'t.status='.self::STATUS_NEW,
                 ),
                 'responded'=>array(
-                    'condition'=>'status='.self::STATUS_RESPONDED,
+                    'condition'=>'t.status='.self::STATUS_RESPONDED,
                 ),
                 'ignored'=>array(
-                    'condition'=>'status='.self::STATUS_IGNORED,
+                    'condition'=>'t.status='.self::STATUS_IGNORED,
                 ),
                 'mine'=>array(
-                    'condition'=>'to_id='.Yii::app()->user->id
+                    'condition'=>'t.to_id='.Yii::app()->user->id
                 ),
                 'fromme'=>array(
-                    'condition'=>'from_id='.Yii::app()->user->id
+                    'condition'=>'t.from_id='.Yii::app()->user->id
                 ),
                 
                 'hided'=>array(
-                    'condition'=>'hide='.self::HIDE_TRUE
+                    'condition'=>'t.hide='.self::HIDE_TRUE
                 ),
                 'showed'=>array(
-                    'condition'=>'hide='.self::HIDE_FALSE
+                    'condition'=>'t.hide='.self::HIDE_FALSE
                 ),
                 'seen'=>array(
-                    'condition'=>'seen='.self::SEEN
+                    'condition'=>'t.seen='.self::SEEN
                 ),
                 'notseen'=>array(
-                    'condition'=>'seen='.self::NOT_SEEN
+                    'condition'=>'t.seen='.self::NOT_SEEN
                 )
             );
         }
@@ -153,7 +153,7 @@ class Question extends CActiveRecord
                         array('question_video_id, from_id, to_id, answer_video_id, likes_n, status, updated_time, created_time', 'safe', 'on'=>'self'),
                         array('to_id, hide', 'numerical', 'integerOnly'=>true),
                         array('anonym', 'in', 'range'=>$this->getAnonymRange()),
-                        array('anonym_custom', 'length', 'min'=>5, 'max'=>30, 'tooShort'=>'At least 5 characters','tooLong'=>'Max 30'),
+                        array('anonym_custom', 'length', 'min'=>5, 'max'=>30, 'tooShort'=>'Minim 5 caractere','tooLong'=>'Maxim 30 caractere'),
                         array('image', 'file', 'allowEmpty'=>true,'types'=>'jpg, gif, png'),
                     );
 	}
@@ -166,16 +166,8 @@ class Question extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-                    'sender'=>array(self::BELONGS_TO, 'User', 'from_id',
-                                'with'=>array(
-                                    'image'
-                                ),
-                    ),
-                    'receiver'=>array(self::BELONGS_TO, 'User', 'to_id',
-                                'with'=>array(
-                                    'image'
-                                ),
-                    ),
+                    'sender'=>array(self::BELONGS_TO, 'User', 'from_id'),
+                    'receiver'=>array(self::BELONGS_TO, 'User', 'to_id'),
                     'likes'=>array(self::STAT, 'User', '{{user_question_assignment}}(question_id, user_id)'),
                     'liked'=>array(self::STAT, 'User', '{{user_question_assignment}}(question_id, user_id)', 'condition'=>"user_id=".Yii::app()->user->id)
 		);
@@ -188,13 +180,13 @@ class Question extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'question_text' => 'Question Text',
-			'question_video_id' => 'Question Video',
+			'question_text' => 'Question',
+			'question_video_id' => 'Video',
 			'from_id' => 'From',
 			'to_id' => 'To',
-			'answer_text' => 'Answer Text',
-			'answer_video_id' => 'Answer Video',
-			'likes_n' => 'Likes N',
+			'answer_text' => 'Answer',
+			'answer_video_id' => 'Video răspuns',
+			'likes_n' => 'Likes',
 			'anonym' => 'Anonym',
 			'status' => 'Status',
 			'created_time' => 'Created Time',

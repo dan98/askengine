@@ -3,8 +3,9 @@ $this->pageTitle=Yii::app()->name . ' - Login';
 ?>
 <style>
     #page{
-        background-image:url(https://gs1.wac.edgecastcdn.net/8019B6/data.tumblr.com/0942fce2d844285e2fec8c0d33fb5584/tumblr_mrzrcjVNzl1rtfdcio1_1280.jpg);
-        background-position:  center;
+        background-image:url("https://gs1.wac.edgecastcdn.net/8019B6/data.tumblr.com/8bc4114d07e8e12eaaad89ed287abd04/tumblr_mjk8jtdZEP1s8pls4o1_1280.jpg");
+        background-position:  left;
+        background-size: cover;
         padding: 70px 20px 70px 20px;
     }
     .welcome{
@@ -26,8 +27,8 @@ $this->pageTitle=Yii::app()->name . ' - Login';
 <div class="row-fluid">
     <div class="span7 ">
         <div class='welcome'>
-            <h1>Querify</h1>
-            <p>Let's ask some dirty things!</p>
+            <h1>Welcome to Querify</h1>
+            <p>Ask questions and read strange people.</p>
         </div>
     </div>
     <div class='span5' align='center'>
@@ -48,7 +49,6 @@ $this->pageTitle=Yii::app()->name . ' - Login';
                         .login-well{
                             width:90%!important;
                         }
-                        .
                     }
                 </style>
                 <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
@@ -65,7 +65,7 @@ $this->pageTitle=Yii::app()->name . ' - Login';
                     <?php echo $form->textField($model, 'email', array("autofocus"=>"autofocus")); ?>
                 </div><br>
                 <div class="input-prepend">
-                    <span class="add-on">*</span>
+                    <span class="add-on" style=''>*</span>
                     <?php echo $form->passwordField($model, 'password');?>
                 </div>
                 <div>

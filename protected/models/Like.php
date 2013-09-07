@@ -50,7 +50,7 @@ class Like extends CActiveRecord
         public function createLike($id)
         {
             if(!Question::model()->findByPk($id) === null)
-                throw new CHttpException(404, 'Question to like not found.');
+                throw new CHttpException(404, 'Întrebarea nu a fost găsită.');
             $model = new Like;
             $model->user_id = Yii::app()->user->id;
             $model->question_id = $id;
@@ -65,7 +65,7 @@ class Like extends CActiveRecord
         public function dislike($id)
         {
             if(!Question::model()->findByPk($id) === null)
-                throw new CHttpException(404, 'Question to dislike not found.');
+                throw new CHttpException(404, 'Întrebarea nu a fost găsită.');
             $model = $this->findByAttributes(array('user_id'=>Yii::app()->user->id, 'question_id'=>$id));
             if($model->delete())
                 return true;

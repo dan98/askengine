@@ -42,7 +42,7 @@ hideandshowlink = function(event){
     $.ajax({
         type:'POST',
         url: url,
-        context: $(this).parent().get(0),
+        context: $(this).parent().parent().get(0),
         success:function(){
              $(this).parent().hide('slow');
         },
@@ -57,7 +57,7 @@ likelink = function(event){
     $.ajax({
         type:'POST',
         url: url,
-        context: $(this).parent(),
+        context: $(this).parent().parent(),
         error:function(){
             $(this).parent().find('.like-num').html(parseInt($(this).parent().find('.like-num').html()) - 1);
             var likehtml = $(this).html();
@@ -80,7 +80,7 @@ dislikelink = function(event){
     $.ajax({
         type:'POST',
         url: url,
-        context: $(this).parent(),
+        context: $(this).parent().parent(),
         error:function(){
             $(this).parent().find('.like-num').html(parseInt($(this).parent().find('.like-num').html()) + 1);
             var likehtml = $(this).html();

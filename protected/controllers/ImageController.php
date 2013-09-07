@@ -14,26 +14,7 @@ class ImageController extends Controller
 	public function filters()
 	{
 		return array(
-			'accessControl', // perform access control for CRUD operations
-			'postOnly + delete', // we only allow deletion via POST request
-		);
-	}
-
-	/**
-	 * Specifies the access control rules.
-	 * This method is used by the 'accessControl' filter.
-	 * @return array access control rules
-	 */
-	public function accessRules()
-	{
-		return array(
-			array('allow',
-				'actions'=>array('avatar'),
-				'users'=>array('@'),
-			),
-			array('deny',  // deny all users
-				'users'=>array('*'),
-			),
+			'postOnly + avatar', // we only allow deletion via POST request
 		);
 	}
         
@@ -71,12 +52,10 @@ class ImageController extends Controller
                             $this->redirect('/me');
                         }
                     }else
-                        throw new CHttpException(500, 'No image found.');
+                        throw new CHttpException(500, 'Image not found.');
                     
-                }
-                $this->render('avatar',array(
-                    'model'=>$model,
-                ));
+                }else
+                    throw new CHttpException(500, 'Method POST is required.');
 	}
 
 	
@@ -84,7 +63,7 @@ class ImageController extends Controller
 	{
 		$model=Image::model()->findByPk($id);
 		if($model===null)
-			throw new CHttpException(404,'The requested page does not exist.');
+			throw new CHttpException(404,'This page doesn\'t exist.');
 		return $model;
 	}
 

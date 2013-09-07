@@ -5,7 +5,6 @@
 <div class="white-block">
     <div class="page-header"><h1>Settings</h1></div>
     
-
     <div class="row-fluid">  
         
     <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array('id'=>'user-settings', 'htmlOptions'=>array('style'=>'display: inline;'))); ?>
@@ -42,7 +41,7 @@
                 $(document).ready(function(){
                     $('#newpassword').click(function(){
                         $('#newpasswordrow').html(
-                        'New password<div><?php echo $form->passwordField($model,'password',array('maxlength'=>40)); ?><?php echo $form->passwordField($model,'repeat_password',array('maxlength'=>40)); ?></div><?php echo $form->error($model,'password'); ?>'
+                        'Parolă nouă<div><?php echo $form->passwordField($model,'password',array('maxlength'=>40)); ?><?php echo $form->passwordField($model,'repeat_password',array('maxlength'=>40)); ?></div><?php echo $form->error($model,'password'); ?>'
                         );
                     });
                 });
@@ -51,13 +50,13 @@
             <a id="newpassword" style="cursor: pointer">Create new password</a>
             <div id="newpasswordrow"></div>
             <br />
-            <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'label' => 'Save', 'type' => 'primary', 'htmlOptions'=>array('style'=>'margin-bottom:20px;'))) ?>
+            <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'label' => 'Salvează', 'type' => 'primary', 'htmlOptions'=>array('style'=>'margin-bottom:20px;'))) ?>
         </div>
         <?php $this->endWidget(); ?>
         
         <form id="image-form" enctype="multipart/form-data" method="post" action="<?php echo Yii::app()->createUrl('image/avatar') ?>" onsubmit="return checkForm()">
             <div class="span4">
-                <label for="image_file">New avatar</label>      
+                <label for="image_file">New image</label>      
 
                      <input type="hidden" id="x1" name="Image[x1]" />
                      <input type="hidden" id="y1" name="Image[y1]" />

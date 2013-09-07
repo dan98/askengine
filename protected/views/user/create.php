@@ -1,18 +1,10 @@
+<div class="card" style="padding-top:0; margin-bottom:0px;">
+    <h3 class="card-heading simple">Register</h3>
+</div>
 <div class="white-block">
-    <h1>Create User</h1>
-    <?php Yii::app()->clientScript->registerCoreScript('jquery'); ?>
     <div class="form">
 
-    <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
-            'id'=>'user-form',
-            'enableAjaxValidation'=>true,
-            'clientOptions' => array(
-             'validateOnSubmit' => true,
-             'validateOnChange' => true, // allow client validation for every field
-            ) 
-    )); ?>
-
-            <p class="note">Fields with <span class="required">*</span> are required.</p>
+    <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array('id'=>'user-form')); ?>
 
             <?php echo $form->errorSummary($model); ?>
             <?php echo $form->label($model,'firstname'); ?>

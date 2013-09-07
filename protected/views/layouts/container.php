@@ -23,7 +23,7 @@
         <?php /* Favicon */ ?>
         <link rel="shortcut icon" href="/img/favicon.png" type="image/x-icon">
         
-        <?php /* Font Robot and Font awesome */ ?>
+        <?php /* Font Robot and Font awesome 
         <style>
             body {-webkit-font-smoothing: antialiased;}
             @font-face {
@@ -54,7 +54,7 @@
                 font-style: normal;
             }
         </style>
-        
+        */ ?>
         <?php /* Title */ ?>	
         <title><?php echo CHtml::encode($this->pageTitle); ?></title>
         
@@ -63,13 +63,15 @@
         $baseUrl = Yii::app()->baseUrl; 
         $cs = Yii::app()->getClientScript();
         $cs->registerScriptFile($baseUrl.'/js/jquery-pjax.js'); // ajax navigation
+        $cs->registerScriptFile($baseUrl.'/js/ajax.js'); // ajax script
         $cs->registerScriptFile($baseUrl.'/js/bootstrap.min.js'); // bootstrap javascript
         $cs->registerScriptFile($baseUrl.'/js/skylo.js'); // progressive bar
+        $cs->registerScriptFile($baseUrl.'/js/jstorage.min.js'); // jstorage (set and get values in browser)
         ?>
         
         <?php /* Ajax navigation init */ ?>
         <script>
-            $('a[ajaxlink]').pjax('#page');
+            $('#sidebar a:not(.noajax), a[ajaxlink]').pjax('#page');
         </script>
         
         <?php /* Remove #_=_ from facebook returnUrl */ ?>
@@ -89,25 +91,30 @@
         $newanswers_n = Question::model()->notseen()->fromme()->count();
         /* Set id user */
         $id = Yii::app()->user->id;
+        /* Get User row and image */
+        $user = User::model()->findByPk($id);
         
         /* Set the items for navbar */
-        $questions = $newquestions_n == 0 ? 'Questions' : "Questions <span class=\"badge badge-info badge-sidebar\">{$newquestions_n}</span>" ;
-        $answers = $newanswers_n == 0 ? 'Answers' : "Answers <span class=\"badge badge-info badge-sidebar\">{$newanswers_n}</span>" ;
+        $questions = $newquestions_n == 0 ? 'Questions' : "Questions <span class=\"badge badge-info\">{$newquestions_n}</span>" ;
+        $answers = $newanswers_n == 0 ? 'Răspunsuri' : "Răspunsuri <span class=\"badge badge-info\">{$newanswers_n}</span>" ;
 
         $items = array(
-            array('label'=>'Feed', 'url'=>'/', 'linkOptions'=>array('ajaxlink'=>'true')),
-            array('label'=>'Me', 'url'=>'/'.$id, 'linkOptions'=>array('ajaxlink'=>'true')),
-            array('label'=>$questions, 'url'=>'/new', 'linkOptions'=>array('ajaxlink'=>'true')),
-            array('label'=>$answers, 'url'=>'/answers', 'linkOptions'=>array('ajaxlink'=>'true')),
-            array('label'=>'Following', 'url'=>'/following', 'linkOptions'=>array('ajaxlink'=>'true')),
-            array('label'=>'Settings', 'url'=>'/user/update/'.Yii::app()->user->id, 'linkOptions'=>array('ajaxlink'=>'true')),
-            array('label'=>'Logout', 'url'=>'/logout', 'linkOptions'=>array('ajaxlink'=>'true'))                                                              
+            array('label'=>'Feed', 'url'=>'/'),
+            array('label'=>'Me', 'url'=>'/'.$id),
+            array('label'=>$questions, 'url'=>'/new'),
+            array('label'=>$answers, 'url'=>'/answers'),
+            array('label'=>'Likes', 'url'=>'/likes'),
+            array('label'=>'Hided', 'url'=>'/hided'),
+            array('label'=>'Ignored', 'url'=>'/ignored'),
+            array('label'=>'Following', 'url'=>'/following'),
+            array('label'=>'Settings', 'url'=>'/user/update/'.Yii::app()->user->id),
+            array('label'=>'Exit', 'url'=>'/logout')                                                              
         );
     }else{
         /* Set the items for navbar */
         $items = array(
-            array('label'=>'Login', 'url'=>array('/login'), 'linkOptions'=>array('ajaxlink'=>'true')),
-            array('label'=>'Register', 'url'=>array('/register'), 'linkOptions'=>array('ajaxlink'=>'true'))         
+            array('label'=>'Login', 'url'=>array('/login')),
+            array('label'=>'Register', 'url'=>array('/register'))         
         );
     }
 ?>
@@ -128,118 +135,188 @@
     );
     ?>
     <div id="sidebar" class="hidden-phone hidden-tablet">
+        <?php if(!Yii::app()->user->isGuest){ ?>
+            <div style="margin-bottom:30px;">
+                    <div class="avatar" style="margin-left:27px">
+                    <?php 
+                    if($user->gravatar){
+                            $this->widget('ext.gravatar.Gravatar', 
+                                array(
+                                    'email' => $user->email,
+                                    'hashed' => false, 
+                                    'default' => 'identicon',                                                
+                                    'size' => 60,
+                                    'href' => '/'.$user->id,
+                                    'rating' => 'PG',
+                                    'htmlOptions' => array('alt' =>$user->firstname.' '.$user->lastname),
+                                )
+                           );
+                        }else{
+                            if($user->image){
+                                $imghtml=CHtml::image('/avatar-thumb/'.$user->image->image, 'Imagine de profil', array('width'=>60, 'height'=>60));
+                                echo CHtml::link($imghtml, array('/'.$user->id));
+                            }else{
+                                $this->widget('ext.gravatar.Gravatar', 
+                                    array(
+                                        'email' => $user->email,
+                                        'hashed' => false, 
+                                        'default' => 'identicon',                                                
+                                        'size' => 60,
+                                        'href' => '/'.$user->id,
+                                        'rating' => 'PG',
+                                        'htmlOptions' => array('alt' =>$user->firstname.' '.$user->lastname, 'style'=>'float:left;'),
+                                    )
+                                );
+                            }
+                        }
+                    ?>
+                 </div>
+            </div>
+        <?php } ?>
         <?php
-            $linkoptions = array('ajaxlink'=>'true');
-
             if(!Yii::app()->user->isGuest){
 
-                $questions = $newquestions_n == 0 ? 'Q' : "Q<span class=\"badge badge-info badge-sidebar\">{$newquestions_n}</span>" ;
-                $answers = $newanswers_n == 0 ? 'A' : "A<span class=\"badge badge-info badge-sidebar\">{$newanswers_n}</span>" ;
+                $questions = 'Q'. ( $newquestions_n == 0 ? '' : "<span class=\"badge badge-info badge-sidebar\">{$newquestions_n}</span>") ;
+                $answers = 'A'. ( $newanswers_n == 0 ? '' : "<span class=\"badge badge-info badge-sidebar\">{$newanswers_n}</span>") ;
                 
-                $this->widget('bootstrap.widgets.TbMenu',array(
-                    'type'=>'list',
-                    'htmlOptions' => array('style'=>'margin-bottom:20px;display:inline-block;'),
-                    'items'=>array(
-                            array('label'=>'Feed', 'url'=>'/', 'linkOptions'=>$linkoptions),
-                            array('label'=>'Me', 'url'=>'/'.$id, 'linkOptions'=>$linkoptions),
-                        )
-                    )
-                );
-        ?>
-                <div class='sidebar-h-ul-container'>
-        <?php
-                $this->widget('bootstrap.widgets.TbMenu',array(
-                        'type'=>'list',
-                        'encodeLabel'=>false,
-                        'htmlOptions' => array('class'=>'sidebar-h-ul'),
-                        'items'=>array(
-                            array('label'=>$questions, 'url'=>array('/new'), 'linkOptions'=>array('ajaxlink'=>'true')),
-                        ),
-                    )
-                );
-                $this->widget('bootstrap.widgets.TbMenu',array(
-                        'type'=>'list',
-                        'encodeLabel'=>false,
-                        'htmlOptions' => array('class'=>'sidebar-h-ul'),
-                        'items'=>array(
-                                array('label'=>$answers, 'url'=>array('/answers'), 'linkOptions'=>array('ajaxlink'=>'true')),
-                        ),
-                    )
-                );
-        ?>
+        ?>        
+                <div>
+                    <?php
+                            $this->widget('bootstrap.widgets.TbMenu',array(
+                                    'type'=>'list',
+                                    'encodeLabel'=>false,
+                                    'items'=>array(
+                                        array('label'=>$questions, 'url'=>array('/new')),
+                                    ),
+                                )
+                            );
+                            $this->widget('bootstrap.widgets.TbMenu',array(
+                                    'type'=>'list',
+                                    'encodeLabel'=>false,
+                                    'items'=>array(
+                                            array('label'=>$answers, 'url'=>array('/answers')),
+                                    ),
+                                )
+                            );
+                    ?>
                 </div>
-                <div class='sidebar-h-ul-container'>
-        <?php
-                $this->widget('bootstrap.widgets.TbMenu',array(
-                        'type'=>'list',
-                        'encodeLabel'=>false,
-                        'htmlOptions' => array('class'=>'sidebar-h-ul'),
-                        'items'=>array(
-                            array('label'=>'Following', 'url'=>array('/following'), 'linkOptions'=>array('ajaxlink'=>'true')),
-                        ),
-                    )
-                );
-        ?>
+                <div>
+                    <?php
+                            $this->widget('bootstrap.widgets.TbMenu',array(
+                                    'type'=>'list',
+                                    'encodeLabel'=>false,
+                                    'items'=>array(
+                                        array('label'=>'&nbsp;I&nbsp;', 'url'=>array('/ignored')),
+                                    ),
+                                )
+                            );
+                            $this->widget('bootstrap.widgets.TbMenu',array(
+                                    'type'=>'list',
+                                    'encodeLabel'=>false,
+                                    'items'=>array(
+                                            array('label'=>'H', 'url'=>array('/hided')),
+                                    ),
+                                )
+                            );
+                    ?>
                 </div>
-        <?php
-                $this->widget('bootstrap.widgets.TbMenu',array(
-                        'type'=>'list',
-                        'htmlOptions' => array('class'=>'sidebar-h-ul'),
-                        'items'=>array(
-                            array('url'=>'/logout', 'icon'=>'off'),
-                        ),
-                    )
-                );
-                $this->widget('bootstrap.widgets.TbMenu',array(
-                        'type'=>'list',
-                        'htmlOptions' => array('class'=>'sidebar-h-ul'),
-                        'items'=>array(
-                            array('url'=>'/user/update/'.$id, 'linkOptions'=>$linkoptions, 'icon'=>'gears')
-                        ),
-                    )
-                );
-        ?>
-        <?php
-            }else{
-                $this->widget('bootstrap.widgets.TbMenu',array(
-                        'type'=>'list',
-                        'htmlOptions' => array('class'=>'sidebar-h-ul'),
-                        'items'=>array(
-                            array('label'=>'Login', 'url'=>'/login', 'linkOptions'=>$linkoptions),
-                            array('label'=>'Register', 'url'=>'/register', 'linkOptions'=>$linkoptions)
-                        ),
-                    )
-                ); 
-            } 
-        ?>
+                <div>
+                    <?php
+                            $this->widget('bootstrap.widgets.TbMenu',array(
+                                    'type'=>'list',
+                                    'encodeLabel'=>false,
+                                    'items'=>array(
+                                        array('label'=>'&nbsp;Following&nbsp;&nbsp;', 'url'=>array('/following')),
+                                    ),
+                                )
+                            );
+                    ?>
+                </div>
+                <div>
+                    <?php
+                            $this->widget('bootstrap.widgets.TbMenu',array(
+                                    'type'=>'list',
+                                    'encodeLabel'=>false,
+                                    'items'=>array(
+                                        array('label'=>'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Likes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', 'url'=>array('/likes')),
+                                    ),
+                                )
+                            );
+                    ?>
+                </div>
+                <?php
+                        $this->widget('bootstrap.widgets.TbMenu',array(
+                                'type'=>'list',
+                                'items'=>array(
+                                    array('url'=>'/logout', 'icon'=>'off', 'linkOptions'=>array('class'=>'noajax')),
+                                ),
+                            )
+                        );
+                        $this->widget('bootstrap.widgets.TbMenu',array(
+                                'type'=>'list',
+                                'items'=>array(
+                                    array('url'=>'/user/update/'.$id, 'icon'=>'gears')
+                                ),
+                            )
+                        );
+                ?>
         
-        <?php 
-        /*
+            <?php
+                }else{
+                    $this->widget('bootstrap.widgets.TbMenu',array(
+                            'type'=>'list',
+                            'items'=>array(
+                                array('label'=>'Login', 'url'=>'/login'),
+                                array('label'=>'Register', 'url'=>'/register')
+                            ),
+                        )
+                    ); 
+                } 
+            ?>
+        
+        <?php if(!Yii::app()->user->isGuest){ ?> 
+        <br />
+        <i class="icon-pushpin" id="hide-sidebar" style="cursor:pointer;opacity:0.2"></i>
         <script>
-            $('#sidebar').hover(
-                function(){
-                    $('#sidebar').animate({
-                        left: "0px",
-                        easing:"easeInOutQuint",
-                        opacity: 1
-                    }, 400);
-                },
-                function(){
-                    $('#sidebar').animate({
-                        left: "-160px",
-                        easing:"easeInOutQuint",
-                        opacity:0.25
-                    }, 400);
+            <?php /* Hide sidebar */ ?>
+            function hidesidebar() {
+                $('#sidebar').hover(
+                    function(){
+                        $('#sidebar').animate({
+                            left: "0px",
+                            easing:"easeInOutQuint",
+                            opacity: 1
+                        }, 200);
+                    },
+                    function(){
+                        $('#sidebar').animate({
+                            left: "-170px",
+                            easing:"easeInOutQuint",
+                            opacity:0.25
+                        }, 200);
+                });
+            }
+            if($.jStorage.get('hide-sidebar') == 1){
+                $('#hide-sidebar').removeClass('icon-rotate-90');
+                hidesidebar();
+                $('#sidebar').css({left: "-170px"});
+            }else{
+                $('#hide-sidebar').addClass('icon-rotate-90');
+            }
+            $('#hide-sidebar').click(function (){
+                if($.jStorage.get('hide-sidebar') == 1){
+                    $.jStorage.set('hide-sidebar', 0);
+                    $('#sidebar').unbind('hover');
+                    $('#hide-sidebar').addClass('icon-rotate-90');
+                }else{
+                    $.jStorage.set('hide-sidebar', 1);
+                    hidesidebar();
+                    $('#hide-sidebar').removeClass('icon-rotate-90');
+                }
             });
         </script>
-        */
-        ?>
+        <?php } ?> 
     </div>
     <?php echo $content; ?>
-    <div align="center" style="bottom:0; width:100%">
-        <div class="card" style="padding-top:0;display:inline-block;margin-top:60px;">
-            <h6 class="card-heading">a <a href="/1" ajaxlink="true">Daniel Grosu</a> production</h6>
-        </div>
-    </div>
 </body>
 </html>

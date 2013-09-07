@@ -108,7 +108,7 @@ class UserController extends Controller
                 $criteria = new CDbCriteria;
                 $criteria->params = array(':id'=>$id);
                 $criteria->condition = 'to_id=:id';
-                $criteria->order = 'updated_time Desc';
+                $criteria->order = 'updated_time DESC';
                 $criteria->with = Yii::app()->user->isGuest ? array('likes') : array('likes', 'liked');
                 $criteria->scopes = array('showed', 'responded');
 		$dataProvider=new CActiveDataProvider('Question', array(

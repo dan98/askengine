@@ -1,48 +1,38 @@
-
-<?php  
-    $baseUrl = Yii::app()->baseUrl; 
-    $cs = Yii::app()->getClientScript();
-    $cs->registerScriptFile($baseUrl.'/js/jquery-ias.min.js');
-    $cs->registerScriptFile($baseUrl.'/js/ajax.js');
-    $cs->registerScriptFile($baseUrl.'/js/jquery.form.min.js');
-?>
-
-    <div class="card" style="padding-top:0; margin-bottom:0px;">
-        <h3 class="card-heading simple">New questions</h3>
-    </div>
+<div class="card" style="padding-top:0; margin-bottom:0px;">
+    <h3 class="card-heading simple">New</h3>
+</div>
 <div class="row-fluid">
     <div class="span8">
         <?php
-        $this->widget('zii.widgets.CListView', array(
-                'id' => 'QuestionList',
-                'dataProvider' => $dataProvider,
-                'itemView' => '_new',
-                'template' => '{items}<div style="clear: both;"></div>{pager}',
-                'emptyText' => '
-                <div align="center">
-                    <div class="card" style="padding-top:0;display:inline-block;margin-top:30px;">
-                        <h3 class="card-heading simple">No new questions found</h3>
+            $this->widget('zii.widgets.CListView',array(
+                    'id' => 'questions',
+                    'dataProvider' => $dataProvider,
+                    'itemView' => '//question/_new',
+                    'template' => '{items} {pager}',
+                    'emptyText' => '
+                    <div align="center">
+                        <div class="card" style="padding-top:0;display:inline-block;margin-top:30px;">
+                            <h3 class="card-heading simple">Nothing new</h3>
+                        </div>
                     </div>
-                </div>
-                ',
-                'pager' => array(
-                    'class' => 'ext.infiniteScroll.IasPager', 
-                    'rowSelector'=>'.view', 
-                    'listViewId' => 'QuestionList',
-
-                    'loaderText'=>'Loading...',
-                    'header' => '',
-                    'options' => array('history' => true, 'triggerPageTreshold' => 5, 'trigger'=>'Load more'),
+                    ',
+                    'pager' => array(
+                        'class' => 'ext.ias.IasPager', 
+                        'rowSelector'=>'.card', 
+                        'listViewId' => 'questions',
+                        'header' => '',
+                        'loaderText'=>'Loading ...',
+                        'options' => array('history' => true, 'triggerPageTreshold' => 5, 'trigger'=>'More'),
+                    )
                 )
-            )
-        );
+            );
         ?>
     </div>
     <div class="span4">
         <div class="card ask-card">
             <h3 class="card-heading simple">
                 <?php
-                    echo !empty($user->title) ? $user->title : 'Ask me a question';
+                    echo !empty($user->title) ? $user->title : 'Ask me';
                 ?>
             </h3>
             <div class="card-body">
@@ -61,7 +51,7 @@
                             echo $form->dropDownList($q, 'anonym', $q->getAnonymOptions());
                         ?>
                         
-                        <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'label' => 'Ask', 'type' => 'info')) ?>
+                        <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'label' => 'Întreabă', 'type' => 'info')) ?>
                     <span id='custom_anonym'></span>
                         <script>
                             $("#Question_anonym")
@@ -92,3 +82,8 @@
         </div>
     </div>
 </div>
+<?php  
+    $baseUrl = Yii::app()->baseUrl; 
+    $cs = Yii::app()->getClientScript();
+    $cs->registerScriptFile($baseUrl.'/js/jquery.form.min.js');
+?>
