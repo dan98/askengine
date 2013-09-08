@@ -23,7 +23,6 @@
         <?php /* Favicon */ ?>
         <link rel="shortcut icon" href="/img/favicon.png" type="image/x-icon">
         
-        <?php /* Font Robot and Font awesome 
         <style>
             body {-webkit-font-smoothing: antialiased;}
             @font-face {
@@ -54,7 +53,6 @@
                 font-style: normal;
             }
         </style>
-        */ ?>
         <?php /* Title */ ?>	
         <title><?php echo CHtml::encode($this->pageTitle); ?></title>
         
