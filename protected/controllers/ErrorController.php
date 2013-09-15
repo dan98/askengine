@@ -2,7 +2,6 @@
 
 class ErrorController extends Controller
 {
-        public $layout='//layouts/page';
         
 	/**
 	 * Controller that handels errors.

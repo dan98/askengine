@@ -16,7 +16,6 @@ class QuestionController extends Controller
         const SEEN = 1;
         const NOT_SEEN = 0;
                 
-	public $layout='//layouts/page';
         public $defaultAction='feed';
 
 	/**

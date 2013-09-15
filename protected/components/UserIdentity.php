@@ -10,7 +10,7 @@ class UserIdentity extends CUserIdentity
 
 		if($user===null)
                     $this->errorCode=self::ERROR_USERNAME_INVALID;
-		else if (bCrypt::verify($this->password, $user->password)) 
+		else if (!bCrypt::verify($this->password, $user->password)) 
                     $this->errorCode=self::ERROR_PASSWORD_INVALID;
 		else
 		{

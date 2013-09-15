@@ -6,7 +6,6 @@ class UserController extends Controller
         const USER_MODER = 1;
         const USER_SIMPLE = 0;
         
-	public $layout='//layouts/page';
         private $_identity;
 
         /**

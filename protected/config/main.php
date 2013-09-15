@@ -36,7 +36,7 @@ return array(
                     "providers" => array (
                         "facebook" => array ( 
                             "enabled" => true,
-                            "keys"    => array ( "id" => "118691594972672", "secret" => "2d26ed337ce8b8ccb0f1eca070aa83d5" ),
+                            "keys"    => array ( "id" => "118691594972672", "secret" => "ec9d6a8722e617e1197773d4f61cdc7b" ),
                             "scope"   => "email,publish_stream,user_birthday, publish_actions, user_likes, user_about_me", 
                             "display" => "" 
                         )

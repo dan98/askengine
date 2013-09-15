@@ -2,7 +2,7 @@
 
 class Controller extends CController{
 
-    public $layout = 'column1';
+    public $layout = 'page';
     public $breadcrumbs;
     public $pageTitle;
 
