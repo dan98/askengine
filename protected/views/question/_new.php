@@ -56,7 +56,7 @@
     <div class="card-body answer-text wrapword response-wrapper" style="margin-top:5px;">
        
     </div>
-    <div class="card-actions" style="padding-bottom:4px; ">
+    <div class="card-actions" style="padding-bottom:6px; margin-top:7px; ">
         <span style="float:left; color:#999;">
         <?php 
             echo Time::timeAgoInWords($data->created_time); 

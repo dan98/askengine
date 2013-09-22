@@ -104,8 +104,13 @@
 
                 if($liked)
                 {
-                    $url = Yii::app()->createAbsoluteUrl('like/dislike/', array('ajax'=>1, 'id'=>$data->id));
-                    echo CHtml::link('dislike',$url, array('class'=>'dislike-link'));
+                    if(isset($deletedislikelink)){
+                        $url = Yii::app()->createAbsoluteUrl('like/dislike/', array('ajax'=>1, 'id'=>$data->id));
+                        echo CHtml::link('dislike',$url, array('class'=>'deletedislike-link'));
+                    }else{
+                        $url = Yii::app()->createAbsoluteUrl('like/dislike/', array('ajax'=>1, 'id'=>$data->id));
+                        echo CHtml::link('dislike',$url, array('class'=>'dislike-link'));
+                    }
                 }
                 else
                 {

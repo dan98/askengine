@@ -1,6 +1,6 @@
 <div class="card" style="padding-top:0; margin-bottom:0px;">
-        <h3 class="card-heading simple">Answers</h3>
-    </div>
+    <h3 class="card-heading simple">Answers</h3>
+</div>
 <div class="row-fluid">
     <div class="span10 offset1">
     <?php
@@ -29,3 +29,6 @@
     ?>
     </div>
 </div>
+<script>
+    $('.answers-link').html('A');
+</script>

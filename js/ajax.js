@@ -11,6 +11,8 @@ function refreshbinds(){
     $('.like-link').bind('click', likelink);
     $('.dislike-link').unbind('click');
     $('.dislike-link').bind('click', dislikelink);    
+    $('.deletedislike-link').unbind('click');
+    $('.deletedislike-link').bind('click', deletedislikelink);    
     $('.response-link').unbind('click');
     $('.response-link').bind('click', responselink);
     $('.ignore-link').unbind('click');
@@ -23,7 +25,7 @@ function refreshbinds(){
          btn.button('loading')
          setTimeout(function () {
              btn.button('reset')
-         }, 5000)
+         }, 3000)
      });
 }
 
@@ -143,7 +145,7 @@ ignorelink = function(event){
             $("#question-number").html(parseInt($("#question-number").html()) - 1);
         },
         beforeSend:function(){
-             $(this).html('ignoring');
+            $(this).html('ignoring');
         }
     });
 };
@@ -174,9 +176,108 @@ responselink = function(event){
             }
         });
 }
-$(function(){
-    refreshbinds();
-    $(document).skylo({
-        state: 'info'
+deletedislikelink = function(event){
+    event.preventDefault();
+    var url = $(this).attr('href');
+    $.ajax({
+        type:'POST',
+        url: url,
+        context: $(this).parent().parent().parent(),
+        success:function(){
+            $(this).parent().hide("slow");
+        },
+        beforeSend:function(){
+            $(this).html("deleting  ... ");
+        }
     });
-});
+};
+function newNumber() {
+    $.ajax({
+        url: "/question/newnumber",
+        success: function (n) {
+            n = parseInt(n);
+            if(n > 0){
+                var innernew = "Q<span class=\"badge badge-info badge-sidebar\">"+n+"<\/span>";
+                $('.new-link').html(innernew);
+                setTimeout('newNumber()', 3000);
+            } else {
+               $('.new-link').html('Q');
+                setTimeout('newNumber()', 1000);
+            }
+            appendNumbersTitle('q', n);
+        },
+        error: function (n) {
+            setTimeout('newNumber()', 1000);
+        }
+    });
+}
+function answersNumber() {
+    $.ajax({
+        url: "/question/answersnumber",
+        success: function (n) {
+            n = parseInt(n);
+            if(n > 0){
+                var innernew = "A<span class=\"badge badge-info badge-sidebar\">"+n+"<\/span>";
+                $('.answers-link').html(innernew);
+                setTimeout('answersNumber()', 2000);
+            } else {
+               $('.answers-link').html('A');
+                setTimeout('answersNumber()', 1000);
+            }
+            appendNumbersTitle('a', n);
+        },
+        error: function (n) {
+            setTimeout('answersNumber()', 1000);
+        }
+    });
+}
+var totalNumbers=0;
+var nativeTitle=document.title;
+var oldQ=0;
+var oldA=0;
+function appendNumbersTitle(type, n){
+    if(type == 'q'){
+        totalNumbers = totalNumbers - oldQ;
+        totalNumbers = totalNumbers + n;
+        oldQ = n;
+    }else
+    if(type == 'a'){
+        totalNumbers = totalNumbers - oldA;
+        totalNumbers = totalNumbers + n;
+        oldA = n;
+    }
+}
+function dynamicTitle(){
+    if(totalNumbers > 0)
+        document.title = "("+totalNumbers+") "+nativeTitle;
+    else
+        document.title = nativeTitle;
+    
+    setTimeout('dynamicTitle()', 100);
+}
+function UserAsk(){
+    $(".ask-user-form")
+    .ajaxForm({
+        url: $(this).attr("action"),
+        type: 'post',
+        success: function(){
+            afterUserAsk();
+        },
+        error: function(){
+            $('.ask-user-submit').button('reset');
+        }
+    });
+}
+function afterUserAsk(){
+    var htmlOld = $(".ask-user-form").parent().html();
+    $(".ask-user-form").parent().html('<div align="center" style="margin-bottom:16px;"><a class="ask-user-new btn btn-info btn-medium">Ask another question</a></div>');
+    $(".ask-user-new").click(function () {
+        $(".ask-user-new").parent().parent().html(htmlOld);
+        $('.ask-user-submit').button('reset');
+        $('.ask-user-submit').html('Ask');
+        UserAsk();
+    });
+    
+
+        
+}

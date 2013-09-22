@@ -6,10 +6,9 @@
         <div class="span6">
             <?php echo $form->textFieldRow($user,'firstname'); ?>
             <?php echo $form->textFieldRow($user,'lastname'); ?>
-            <?php echo $form->textFieldRow($user,'username'); ?>
         </div>
         <div class="span6">
-            <?php echo $form->textAreaRow($user,'about',array('rows'=>8, 'cols'=>30)); ?>
+            <?php echo $form->textAreaRow($user,'about',array('rows'=>5, 'cols'=>30)); ?>
         </div>
     </div>   
 <br />

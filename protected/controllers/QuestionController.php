@@ -38,7 +38,7 @@ class QuestionController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow',
-				'actions'=>array('feed','ignored','answers','hided','likes', 'new', 'respond', 'delete', 'ignore', 'hide', 'show'),
+				'actions'=>array('feed','ignored','answers', 'answersnumber', 'hided', 'likes', 'new', 'newnumber', 'respond', 'delete', 'ignore', 'hide', 'show'),
 				'users'=>array('@'),
 			),
 			array('deny',
@@ -87,13 +87,13 @@ class QuestionController extends Controller
 
             if(isset($_POST['Question']))
             {
-                    if(Yii::app()->user->isGuest)
-                        $this->redirect(array('user/login'));
                     $q->attributes = $_POST['Question'];
+                    $q->image = $_POST['Question']['image'];
                     $q->from_id = $q->to_id = Yii::app()->user->id;
                     $q->status = 1;
                     if(CUploadedFile::getInstance($q,'image'))
                         {
+                        print_r ($_POST['Question']['image']);print_r ($q->image);
                             $uploadedFile = CUploadedFile::getInstance($q,'image');
                             $rnd = rand(0,9999);
                             $fileName = "{$rnd}-{$uploadedFile}";  // random number + file name
@@ -112,9 +112,9 @@ class QuestionController extends Controller
                     if($q->save()){
                          if(isset($uploadedFile))
                             {
-                                $uploadedFile->saveAs(dirname(Yii::app()->getBasePath())."\images\\".$fileName);
+                                $uploadedFile->saveAs(dirname(Yii::app()->getBasePath())."/images/".$fileName);
                                 Yii::import('ext.yii-easyimage.drivers.ImageKit');
-                                $image = ImageKit::factory("images/".$fileName);
+                                $image = ImageKit::factory(dirname(Yii::app()->getBasePath())."/images/".$fileName);
                                 $image->resize(300, 300);
                                 $image->save("images-thumb/".$fileName);
                             }
@@ -139,6 +139,10 @@ class QuestionController extends Controller
             ));
             
         }
+        public function actionNewNumber(){
+            echo Question::model()->new()->mine()->count();
+        }
+        
         public function actionIgnored()
         {
             $dataProvider=new EActiveDataProvider('Question', array(
@@ -166,7 +170,7 @@ class QuestionController extends Controller
                     'with' => array('liked', 'likes', 'sender', 'receiver.image', 'receiver')
                 ),
                 'pagination'=>array(
-                    'pageSize'=>10,
+                    'pageSize'=>30,
                 ),
             ));
             $this->render('answers',array(
@@ -175,6 +179,9 @@ class QuestionController extends Controller
             ));
             Question::model()->updateAll(array('seen'=>self::SEEN), 'from_id = '.Yii::app()->user->id);
             
+        }
+        public function actionAnswersNumber(){
+            echo Question::model()->notseen()->fromme()->count();
         }
         
         public function actionHided()
@@ -246,9 +253,9 @@ class QuestionController extends Controller
 			if($model->save()){
                             if(isset($uploadedFile))
                             {
-                                $uploadedFile->saveAs(dirname(Yii::app()->getBasePath())."\images\\".$fileName);
+                                $uploadedFile->saveAs(dirname(Yii::app()->getBasePath())."/images/".$fileName);
                                 Yii::import('ext.yii-easyimage.drivers.ImageKit');
-                                $image = ImageKit::factory("images/".$fileName);
+                                $image = ImageKit::factory(dirname(Yii::app()->getBasePath())."/images/".$fileName);
                                 $image->resize(300, 300);
                                 $image->save("images-thumb/".$fileName);
                             }

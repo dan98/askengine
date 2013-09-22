@@ -36,7 +36,7 @@
                 ?>
             </h3>
             <div class="card-body">
-                <?php $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array('id' => 'question-form'))?>
+                <?php $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array('id' => 'question-form', 'htmlOptions'=>array('enctype'=>"multipart/form-data")))?>
                     
                     <?php echo $form->errorSummary($q) ?>
                 
@@ -82,8 +82,3 @@
         </div>
     </div>
 </div>
-<?php  
-    $baseUrl = Yii::app()->baseUrl; 
-    $cs = Yii::app()->getClientScript();
-    $cs->registerScriptFile($baseUrl.'/js/jquery.form.min.js');
-?>

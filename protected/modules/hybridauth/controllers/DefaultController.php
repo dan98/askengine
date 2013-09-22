@@ -68,11 +68,8 @@ class DefaultController extends Controller {
 					//Save the form
 					$user->attributes = $_POST['User'];
                                         if (isset($identity->userData)) {
-                                            $user->email = $identity->userData->email;
-                                            $user->day = $identity->userData->birthDay;
-                                            $user->month = $identity->userData->birthMonth;
-                                            $user->year = $identity->userData->birthYear;
                                             $user->gravatar = 1;
+                                            $user->email = $identity->userData->email;
                                         }
 					if ($user->validate() && $user->save()) {
 						if ($this->module->withYiiUser == true) {
@@ -84,7 +81,7 @@ class DefaultController extends Controller {
 						}
 						
 						$identity->id = $user->id;
-						$identity->username = $user->username;
+						$identity->username = $user->email;
 						$this->_linkProvider($identity);
 						$this->_loginUser($identity);
 					} // } else { do nothing } => the form will get redisplayed

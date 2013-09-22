@@ -82,9 +82,6 @@ return array(
                                 '/likes'=>'/question/likes',
 			),
 		),
-                'debug' => array(
-                    'class' => 'ext.debug.Yii2Debug',
-                ),
 		'db'=>array(
 			'connectionString' => 'mysql:host=127.0.0.1;dbname=askengine',
 			'emulatePrepare' => true,

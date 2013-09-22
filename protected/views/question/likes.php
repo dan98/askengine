@@ -8,7 +8,7 @@
                     'id' => 'questions',
                     'dataProvider' => $dataProvider,
                     'itemView' => '//question/_feed',
-                    'viewData' => array('likedcheck'=>false),
+                    'viewData' => array('likedcheck'=>false,'deletedislikelink'=>true),
                     'template' => '{items} {pager}',
                     'emptyText' => '
                     <div align="center">
@@ -29,21 +29,3 @@
             );
         ?>
 </div>
-<script>
-    dislikelink = function(event){
-        event.preventDefault();
-        var url = $(this).attr('href');
-        $.ajax({
-            type:'POST',
-            url: url,
-            context: $(this).parent().parent(),
-            success:function(){
-                $(this).parent().hide("slow");
-            },
-            beforeSend:function(){
-                $(this).html("deleting  ... ");
-            }
-        });
-    };
-    refreshbinds();
-</script>

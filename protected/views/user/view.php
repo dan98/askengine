@@ -44,7 +44,7 @@
         <?php
         if ($me)
             echo CHtml::link(
-                '<button class="btn btn-success btn-small" name="yt0" type="button">settings</button>',
+                '<button class="btn btn-success btn-small hidden-phone" name="yt0" type="button">settings</button>',
                 $this->createAbsoluteUrl('user/update', array('id' => $model->id)),
                 array('ajaxlink' => 'true')
             );
@@ -85,11 +85,11 @@
         <div class="card ask-card">
             <h3 class="card-heading simple">
                 <?php
-                    echo !empty($model->title) ? $model->title : 'Întreabă-mă';
+                    echo !empty($model->title) ? $model->title : 'Ask me now';
                 ?>
             </h3>
             <div class="card-body">
-                <?php $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array('id' => 'question-form'))?>
+                <?php $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array('id' => 'question-form', 'htmlOptions'=>array('class' => 'ask-user-form')))?>
                     
                     <?php echo $form->errorSummary($q) ?>
                 
@@ -100,6 +100,7 @@
                                 return $(this).css('display') == 'none';
                             }).show();
                             $(this).attr('rows', 4);
+                            UserAsk();
                         });
                     </script>
                     
@@ -130,7 +131,7 @@
 
                         <?php echo $form->hiddenField($q, 'to_id', array('value' => $model->id)) ?>
                         
-                        <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'label' => 'Ask', 'type' => 'info')) ?>
+                        <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'label' => 'Ask', 'type' => 'info', 'htmlOptions'=>array('data-loading-text'=>"asking...", 'class'=>'ask-user-submit'))) ?>
                     
                     </div>
                 <?php $this->endWidget(); ?>
@@ -144,7 +145,7 @@
                     'template' => '{items}{pager}',
                     'emptyText' => '
                         <div class="card" style="padding-top:0;">
-                            <h3 class="card-heading simple">Nimic</h3>
+                            <h3 class="card-heading simple">Nothing</h3>
                         </div>
                     ',
                     'pager' => array(
@@ -159,7 +160,7 @@
             );
         ?>
     </div>
-    <div class="span4">
+    <div class="span4 hidden-phone">
         <div class="card ask-card">
             <div class="card-body" style="margin-top:0">
                 <table class="table">

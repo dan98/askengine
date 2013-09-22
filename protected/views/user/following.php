@@ -14,7 +14,7 @@
                     'emptyText' => '
                     <div align="center">
                         <div class="card" style="padding-top:0;display:inline-block;margin-top:30px;">
-                            <h3 class="card-heading simple">Don\'t follow anybody.</h3>
+                            <h3 class="card-heading simple">Don\'t follow anybody</h3>
                         </div>
                     </div>
                     ',

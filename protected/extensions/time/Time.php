@@ -87,19 +87,7 @@ class Time {
 	* @return boolean True if date is in this month
 	*/
 	public static function isThisMonth($date) {
-            return date('m Y',$date) == date('m Y', time());
-	}
-        
-        /**
-	* Returns true if given date is this minute
-	*
-	* @param string $date Unix timestamp
-	* @return boolean True if date is this minute
-	*/
-	public static function isThisMinute($date) {
-            $class = date_create($date);
-            $now = date_create();
-            return date_format($class,'Y-m-d H:i') == date_format($class,'Y-m-d H:i');
+		return date('m Y',$date) == date('m Y', time());
 	}
 	
 	/**
@@ -124,7 +112,7 @@ class Time {
 	* @param array $options Default format if timestamp is used in $dateString
 	* @return string Relative time string.
 	*/
-	public static function timeAgoInWords($dateTime, $options = array()) {
+	function timeAgoInWords($dateTime, $options = array()) {
 		$now = time();
 
 		$inSeconds = strtotime($dateTime);
@@ -234,32 +222,33 @@ class Time {
 		$diff = $futureTime - $pastTime;
 
 		if ($diff > abs($now - strtotime($end))) {
-			$relativeDate = sprintf(' %s', date($format, $inSeconds));
+			$relativeDate = sprintf('on %s', date($format, $inSeconds));
 		} else {
 			if ($years > 0) {
-				$relativeDate .= ($years == 1 ? 'un' : $years) . ' ' . ($years==1 ? 'an':'ani');
+				// years and months and days
+				$relativeDate .= ($relativeDate ? ', ' : '') . $years . ' ' . ($years==1 ? 'year':'years');
 			} elseif (abs($months) > 0) {
-				$relativeDate .= ($months == 1 ? 'o' : $months) . ' ' . ($months==1 ? 'lună':'luni');
+				// months, weeks and days
+				$relativeDate .= ($relativeDate ? ', ' : '') . $months . ' ' . ($months==1 ? 'month':'months');
 			} elseif (abs($weeks) > 0) {
-				$relativeDate .= ($weeks == 1 ? 'o' : $weeks) . ' ' . ($weeks==1 ? 'săptămînă':'săptămîni');
+				// weeks and days
+				$relativeDate .= ($relativeDate ? ', ' : '') . $weeks . ' ' . ($weeks==1 ? 'week':'weeks');
 			} elseif (abs($days) > 0) {
-				$relativeDate .= ($days == 1 ? 'o' : $days) . ' ' . ($days==1 ? 'zi':'zile');
+				// days and hours
+				$relativeDate .= ($relativeDate ? ', ' : '') . $days . ' ' . ($days==1 ? 'day':'days');
 			} elseif (abs($hours) > 0) {
-				$relativeDate .= ($hours == 1 ? 'o' : $hours) . ' ' . ($hours==1 ? 'oră':'ore');
+				// hours and minutes
+				$relativeDate .= ($relativeDate ? ', ' : '') . $hours . ' ' . ($hours==1 ? 'hour':'hours');
 			} elseif (abs($minutes) > 0) {
-				$relativeDate .= ($minutes == 1 ? 'o' : $minutes) . ' ' . ($minutes==1 ? 'minută':'minute');
+				// minutes only
+				$relativeDate .= ($relativeDate ? ', ' : '') . $minutes . ' ' . ($minutes==1 ? 'minute':'minutes');
 			} else {
 				// seconds only
-                                if(self::isThisMinute($dateTime)){
-                                    $relativeDate .= 'numai ce';
-                                    $backwards = true;
-                                }else{
-                                    $relativeDate .= ($relativeDate ? ', ' : '') . $seconds . ' ' . ($seconds==1 ? 'secundă':'secunde');
-                                }
+				$relativeDate .= ($relativeDate ? ', ' : '') . $seconds . ' ' . ($seconds==1 ? 'second':'seconds');
 			}
 
 			if (!$backwards) {
-                            $relativeDate = sprintf('acum %s', $relativeDate);
+				$relativeDate = sprintf('%s ago', $relativeDate);
 			}
 		}
 		return $relativeDate;

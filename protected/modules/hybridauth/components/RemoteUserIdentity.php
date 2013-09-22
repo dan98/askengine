@@ -4,7 +4,7 @@ class RemoteUserIdentity extends CBaseUserIdentity {
 
 	public $id;
 	public $userData;
-	public $username;
+	public $email;
 	public $loginProvider;
 	public $loginProviderIdentifier;
 	private $_adapter;
@@ -45,7 +45,7 @@ class RemoteUserIdentity extends CBaseUserIdentity {
 				$this->errorCode = self::ERROR_USERNAME_INVALID;
 			} else {
 				$this->id = $user->id;
-				$this->username = $user->username;
+				$this->email = $user->email;
                                 $this->setState('lastLogin', date("m/d/y g:i A", strtotime($user->last_login_time)));
                                 $this->setState('roles', $user->role);     
                                 $user->saveAttributes(array(
@@ -65,10 +65,10 @@ class RemoteUserIdentity extends CBaseUserIdentity {
 	}
 
 	/**
-	 * @return string the username of the user record
+	 * @return string the email of the user record
 	 */
 	public function getName() {
-		return $this->username;
+		return $this->email;
 	}
 	
 	/**

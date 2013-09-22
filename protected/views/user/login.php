@@ -94,8 +94,7 @@ $this->pageTitle=Yii::app()->name . ' - Login';
                 </div>
                 <div>
                     <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=>'submit', 'label'=>'Sign In', 'type'=>'primary', 'htmlOptions'=>array( 'class'=>'login-btn'))); ?>
-                    <?php $this->widget('application.modules.hybridauth.widgets.renderProviders'); ?>
-
+                    <span style="margin-left: 10px;"><?php $this->widget('application.modules.hybridauth.widgets.renderProviders'); ?></span>
                 </div>
                 <?php $this->endWidget(); ?>
             </div>

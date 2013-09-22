@@ -1,13 +1,16 @@
 <?php /* Main layout */ ?>
+<?php /* Check if is guest */   
+    $isGuest = Yii::app()->user->isGuest;
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
         <?php /* Meta tags */ ?>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="language" content="en" />
-        <meta name="viewport" content="width=device-width, initial-scale=0.95">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
             
-	<?php /* Bootplus distro of twitter bootstrap */ ?>
+	<?php /* Bootplus distro o     f twitter bootstrap */ ?>
         <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/bootplus.min.css"  />
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/bootplus-responsive.min.css" />
 	
@@ -30,30 +33,45 @@
         <?php
         $baseUrl = Yii::app()->baseUrl; 
         $cs = Yii::app()->getClientScript();
+        $cs=Yii::app()->clientScript;
+        $cs->scriptMap=array(
+         'jquery-ui.min.js'=>false,
+         'script.js'=>false
+        );
         $cs->registerScriptFile($baseUrl.'/js/jquery-pjax.min.js'); // ajax navigation
         $cs->registerScriptFile($baseUrl.'/js/ajax.js'); // ajax script
         $cs->registerScriptFile($baseUrl.'/js/bootstrap.min.js'); // bootstrap javascript
         $cs->registerScriptFile($baseUrl.'/js/skylo.min.js'); // progressive bar
         $cs->registerScriptFile($baseUrl.'/js/jstorage.min.js'); // jstorage (set and get values in browser)
+        $cs->registerScriptFile($baseUrl.'/js/jquery.form.min.js');
         ?>
-        
-        <?php /* Ajax navigation init */ ?>
         <script>
-            $('#sidebar a:not(.noajax), a[ajaxlink]').pjax('#page');
-        </script>
-        
-        <?php /* Remove #_=_ from facebook returnUrl */ ?>
-        <script type="text/javascript">
+            <?php /* Remove #_=_ from facebook returnUrl */ ?>
             if (window.location.hash == '#_=_') {
                 window.location.hash = ''; // for older browsers, leaves a # behind
                 history.pushState('', document.title, window.location.pathname); // nice and clean
                 e.preventDefault(); // no page reload
             }
+            
+            <?php /* On document ready do : */ ?>
+            $(function(){
+                refreshbinds();
+                $(document).skylo({
+                    state: 'info'
+                });
+                $('#sidebar a:not(.noajax), a[ajaxlink]').pjax('#page'); /* Ajax navigation init */
+                <?php if(!$isGuest){ ?>
+                newNumber();
+                answersNumber();
+                nativeTitle = document.title;
+                dynamicTitle()
+                <?php } ?>
+            });
         </script>
 </head>
     
 <?php
-    if(!Yii::app()->user->isGuest){
+    if(!$isGuest){
         /* Query the database for new answers or questions */
         $newquestions_n = Question::model()->new()->mine()->count();
         $newanswers_n = Question::model()->notseen()->fromme()->count();
@@ -69,8 +87,8 @@
         $items = array(
             array('label'=>'Feed', 'url'=>'/'),
             array('label'=>'Me', 'url'=>'/'.$id),
-            array('label'=>$questions, 'url'=>'/new'),
-            array('label'=>$answers, 'url'=>'/answers'),
+            array('label'=>$questions, 'url'=>'/new', 'linkOptions'=>array('class'=>'new-link')),
+            array('label'=>$answers, 'url'=>'/answers', 'linkOptions'=>array('class'=>'answers-link')),
             array('label'=>'Likes', 'url'=>'/likes'),
             array('label'=>'Hided', 'url'=>'/hided'),
             array('label'=>'Ignored', 'url'=>'/ignored'),
@@ -105,7 +123,7 @@
     );
     ?>
     <div id="sidebar" class="hidden-phone hidden-tablet">
-        <?php if(!Yii::app()->user->isGuest){ ?>
+        <?php if(!$isGuest){ ?>
             <div style="margin-bottom:30px;">
                     <div class="avatar" style="margin-left:27px">
                     <?php 
@@ -134,7 +152,7 @@
                                         'size' => 60,
                                         'href' => '/'.$user->id,
                                         'rating' => 'PG',
-                                        'htmlOptions' => array('alt' =>$user->firstname.' '.$user->lastname, 'style'=>'float:left;'),
+                                        'htmlOptions' => array('alt' =>$user->firstname.' '.$user->lastname),
                                     )
                                 );
                             }
@@ -144,7 +162,7 @@
             </div>
         <?php } ?>
         <?php
-            if(!Yii::app()->user->isGuest){
+            if(!$isGuest){
 
                 $questions = 'Q'. ( $newquestions_n == 0 ? '' : "<span class=\"badge badge-info badge-sidebar\">{$newquestions_n}</span>") ;
                 $answers = 'A'. ( $newanswers_n == 0 ? '' : "<span class=\"badge badge-info badge-sidebar\">{$newanswers_n}</span>") ;
@@ -156,7 +174,19 @@
                                     'type'=>'list',
                                     'encodeLabel'=>false,
                                     'items'=>array(
-                                        array('label'=>$questions, 'url'=>array('/new')),
+                                        array('label'=>'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Feed&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', 'url'=>'/'),
+                                    ),
+                                )
+                            );
+                    ?>
+                </div>
+                <div>
+                    <?php
+                            $this->widget('bootstrap.widgets.TbMenu',array(
+                                    'type'=>'list',
+                                    'encodeLabel'=>false,
+                                    'items'=>array(
+                                        array('label'=>$questions, 'url'=>array('/new'), 'linkOptions'=>array('class'=>'new-link')),
                                     ),
                                 )
                             );
@@ -164,7 +194,7 @@
                                     'type'=>'list',
                                     'encodeLabel'=>false,
                                     'items'=>array(
-                                            array('label'=>$answers, 'url'=>array('/answers')),
+                                            array('label'=>$answers, 'url'=>array('/answers'), 'linkOptions'=>array('class'=>'answers-link')),
                                     ),
                                 )
                             );
@@ -208,7 +238,7 @@
                                     'type'=>'list',
                                     'encodeLabel'=>false,
                                     'items'=>array(
-                                        array('label'=>'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Likes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', 'url'=>array('/likes')),
+                                        array('label'=>'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Likes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', 'url'=>array('/likes')),
                                     ),
                                 )
                             );
@@ -244,7 +274,7 @@
                 } 
             ?>
         
-        <?php if(!Yii::app()->user->isGuest){ ?> 
+        <?php if(!$isGuest){ ?>
         <br />
         <i class="icon-pushpin" id="hide-sidebar" style="cursor:pointer;opacity:0.2"></i>
         <style>

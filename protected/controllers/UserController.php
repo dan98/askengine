@@ -100,8 +100,7 @@ class UserController extends Controller
                                 $q->anonym_custom = $_POST['Question']['anonym_custom'];
                         }
                         
-			if($q->save())
-				$this->redirect(array('view','id'=>$id));
+			$q->save();
 		}
                 
                 $criteria = new CDbCriteria;
@@ -116,13 +115,15 @@ class UserController extends Controller
                         'pageSize'=>10,
                     ),
                 ));
-                
+                $user = $this->loadModel($id);
+                $this->pageTitle = $user->firstname.' '.$user->lastname;
                 // Render
 		$this->render('view',array(
-			'model'=>$this->loadModel($id),
+			'model'=>$user,
                         'questions'=>$dataProvider,
                         'q'=>$q
 		));
+                
 	}
 
 	public function actionCreate()

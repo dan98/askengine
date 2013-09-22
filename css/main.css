@@ -199,6 +199,10 @@ body {-webkit-font-smoothing: antialiased;}
             width: -o-calc(100% - 20px)!important;
             width: calc(100% - 20px)!important;
     }
+    .view-image img{
+        width:60px;
+        height:60px;
+    }
 }
 @media (min-width: 600px) {
     .view-user{
@@ -207,6 +211,14 @@ body {-webkit-font-smoothing: antialiased;}
 }
 
 /* Bootplus */
+.nav .badge{
+    margin-left: 7px;
+    margin-bottom: 3px;
+}
+.btn-navbar{
+    min-height: 0px!important;
+    height: 14px!important;
+}
 .page-header{
     color: #5a5a5a;
 }
@@ -252,7 +264,13 @@ body {-webkit-font-smoothing: antialiased;}
     width: calc(100% - 18px)!important;
     resize: none; 
 }
-#user-settings div input[type="text"], #user-settings div textarea{
+#user-settings input[type="text"], #user-settings input[type="password"], #user-settings textarea{
+    width: -moz-calc(100% - 18px)!important;
+    width: -webkit-calc(100% - 18px)!important;
+    width: -o-calc(100% - 18px)!important;
+    width: calc(100% - 18px)!important;
+}
+#user-create input[type="text"], #user-create input[type="password"], #user-create textarea{
     width: -moz-calc(100% - 18px)!important;
     width: -webkit-calc(100% - 18px)!important;
     width: -o-calc(100% - 18px)!important;

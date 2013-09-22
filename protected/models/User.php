@@ -14,7 +14,6 @@
  * @property string $about
  * @property string $website
  * @property string $title
- * @property string $username safe
  * @property string $birthday 
  * @property integer $answers_n safe
  * @property integer $likes_n safe
@@ -129,21 +128,20 @@ class User extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('email, firstname, lastname, username', 'required'),
+			array('email, firstname, lastname, about', 'required'),
 			array('email, website', 'length', 'max'=>256),
                         array('email', 'unique'),
                         array('email', 'email'),
 			array('language', 'length', 'max'=>10),
-			array('username', 'length', 'max'=>16),    
                         array('title', 'length', 'max'=>30), 
-                        array('about', 'length', 'max'=>100), 
+                        array('about', 'length', 'min'=> 10, 'max'=>100), 
                         array('website', 'length', 'max'=>50),
                         array('residence', 'length', 'max'=>50), 
                         array('password, repeat_password', 'required', 'on'=>'insert'),
                         array('password, repeat_password', 'length', 'min'=>6, 'max'=>40),
                         array('password', 'compare', 'compareAttribute'=>'repeat_password'),
                         array('role, answers_n, likes_d, followers_n, created_time, updated_time, last_login_time, status, image_id, birthday, day, month, year','safe'),
-                        array('email, username','safe','on'=>'update'),
+                        array('email','safe','on'=>'update'),
                         array('gravatar', 'in', 'range'=>range(0, 1)),
                         array('anonym_questions', 'in', 'range'=>range(0, 1))
                     );
@@ -182,7 +180,6 @@ class User extends CActiveRecord
 			'about' => 'About',
 			'website' => 'Website',
 			'title' => 'Title',
-			'username' => 'Username',
 			'birthday' => 'Birthday',
 			'status' => 'Status',
 			'image_id' => 'Image',
@@ -242,8 +239,7 @@ class User extends CActiveRecord
         public function addAnswer($id){
             $user = User::model()->findByPk($id);
             $user->answers_n = $user->answers_n + 1;
-            $user->password = null;
-            if($user->save())
+            if($user->update(array('answers_n')))
                 return true;
             else{
                 print_r( $user->getErrors());
@@ -252,8 +248,7 @@ class User extends CActiveRecord
         public function substractAnswer($id){
             $user = User::model()->findByPk($id);
             $user->answers_n = $user->answers_n - 1;
-            $user->password = null;
-            if($user->save())
+            if($user->update(array('answers_n')))
                 return true;
             else{
                 print_r( $user->getErrors());

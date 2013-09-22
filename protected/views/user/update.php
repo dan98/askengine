@@ -15,21 +15,21 @@
             <?php echo $form->textFieldRow($model,'firstname'); ?>
 
             <?php echo $form->textFieldRow($model,'lastname'); ?>
+            
+            <?php echo $form->textAreaRow($model,'about',array('rows'=>6, 'cols'=>30)); ?>
+            <?php //echo $form->textFieldRow($model,'residence'); ?>
 
-            <?php echo $form->textFieldRow($model,'residence'); ?>
+            <?php //echo $form->textFieldRow($model,'language',array('size'=>10,'maxlength'=>10)); ?>
 
-            <?php echo $form->textFieldRow($model,'language',array('size'=>10,'maxlength'=>10)); ?>
-
-            <?php echo $form->textFieldRow($model,'website',array('size'=>30,'maxlength'=>256)); ?>
-
-            <?php echo $form->labelEx($model,'birthday'); ?>
-            <?php echo $form->dropDownList($model, 'day', $model->getAllDays(), array('options' => array($model->day=>array('selected'=>true)), 'style'=>'width:auto;')); ?>
-            <?php echo $form->dropDownList($model, 'month', $model->getAllMonths(), array('options' => array($model->month=>array('selected'=>true)), 'style'=>'width:auto;')); ?>
-            <?php echo $form->dropDownList($model, 'year', $model->getAllYears(), array('options' => array($model->year=>array('selected'=>true)), 'style'=>'width:auto;')); ?>
-            <?php echo $form->error($model,'birthday'); ?>
+            <?php //echo $form->textFieldRow($model,'website',array('size'=>30,'maxlength'=>256)); ?>
+            
+            <?php //echo $form->labelEx($model,'birthday'); ?>
+            <?php //echo $form->dropDownList($model, 'day', $model->getAllDays(), array('options' => array($model->day=>array('selected'=>true)), 'style'=>'width:auto;')); ?>
+            <?php //echo $form->dropDownList($model, 'month', $model->getAllMonths(), array('options' => array($model->month=>array('selected'=>true)), 'style'=>'width:auto;')); ?>
+            <?php //echo $form->dropDownList($model, 'year', $model->getAllYears(), array('options' => array($model->year=>array('selected'=>true)), 'style'=>'width:auto;')); ?>
+            <?php //echo $form->error($model,'birthday'); ?>
         </div>
         <div class="span4">
-            <?php echo $form->textAreaRow($model,'about',array('rows'=>6, 'cols'=>30)); ?>
             
             <?php echo $form->textFieldRow($model,'title'); ?>
 
@@ -41,7 +41,7 @@
                 $(document).ready(function(){
                     $('#newpassword').click(function(){
                         $('#newpasswordrow').html(
-                        'Parolă nouă<div><?php echo $form->passwordField($model,'password',array('maxlength'=>40)); ?><?php echo $form->passwordField($model,'repeat_password',array('maxlength'=>40)); ?></div><?php echo $form->error($model,'password'); ?>'
+                        '<label for="User_password">New password</label> <div><?php echo $form->passwordField($model,'password',array('maxlength'=>40)); ?><?php echo $form->passwordField($model,'repeat_password',array('maxlength'=>40)); ?></div><?php echo $form->error($model,'password'); ?>'
                         );
                     });
                 });
