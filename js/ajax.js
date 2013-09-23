@@ -139,10 +139,17 @@ ignorelink = function(event){
     $.ajax({
         type:'POST',
         url: url,
-        context: $(this).parent(),
+        context: $(this).parent().parent(),
         success: function(data){
             $(this).parent().hide('slow');
-            $("#question-number").html(parseInt($("#question-number").html()) - 1);
+            appendNumbersTitle('q', oldQ-1);
+            $(".new-link span").each(function(){
+                var newNewNumber = parseInt($( this ) - 1);
+                if(newNewNumber > 0)
+                   $( this ).html(parseInt($( this ) - 1));
+                else
+                    $( this ).html(""); 
+            })
         },
         beforeSend:function(){
             $(this).html('ignoring');
@@ -172,7 +179,13 @@ responselink = function(event){
                         $('.items').html(empty)
                     }
                 });
-                $("#question-number").html(parseInt($("#question-number").html()) - 1);
+                $(".new-link span").each(function(){
+                    var newNewNumber = parseInt($( this ) - 1);
+                    if(newNewNumber > 0)
+                       $( this ).html(parseInt($( this ) - 1));
+                    else
+                        $( this ).html(""); 
+                })
             }
         });
 }
@@ -199,15 +212,15 @@ function newNumber() {
             if(n > 0){
                 var innernew = "Q<span class=\"badge badge-info badge-sidebar\">"+n+"<\/span>";
                 $('.new-link').html(innernew);
-                setTimeout('newNumber()', 3000);
+                setTimeout('newNumber()', 7000);
             } else {
                $('.new-link').html('Q');
-                setTimeout('newNumber()', 1000);
+                setTimeout('newNumber()', 5000);
             }
             appendNumbersTitle('q', n);
         },
         error: function (n) {
-            setTimeout('newNumber()', 1000);
+            setTimeout('newNumber()', 5000);
         }
     });
 }
@@ -219,15 +232,15 @@ function answersNumber() {
             if(n > 0){
                 var innernew = "A<span class=\"badge badge-info badge-sidebar\">"+n+"<\/span>";
                 $('.answers-link').html(innernew);
-                setTimeout('answersNumber()', 2000);
+                setTimeout('answersNumber()', 7000);
             } else {
                $('.answers-link').html('A');
-                setTimeout('answersNumber()', 1000);
+                setTimeout('answersNumber()', 5000);
             }
             appendNumbersTitle('a', n);
         },
         error: function (n) {
-            setTimeout('answersNumber()', 1000);
+            setTimeout('answersNumber()', 5000);
         }
     });
 }

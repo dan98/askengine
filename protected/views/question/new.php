@@ -51,7 +51,7 @@
                             echo $form->dropDownList($q, 'anonym', $q->getAnonymOptions());
                         ?>
                         
-                        <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'label' => 'Întreabă', 'type' => 'info')) ?>
+                        <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'label' => 'Submit', 'type' => 'info')) ?>
                     <span id='custom_anonym'></span>
                         <script>
                             $("#Question_anonym")

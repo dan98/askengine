@@ -44,7 +44,7 @@
         <?php
         if ($me)
             echo CHtml::link(
-                '<button class="btn btn-success btn-small hidden-phone" name="yt0" type="button">settings</button>',
+                '<button class="btn btn-success btn-small" name="yt0" type="button">settings</button>',
                 $this->createAbsoluteUrl('user/update', array('id' => $model->id)),
                 array('ajaxlink' => 'true')
             );

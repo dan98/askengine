@@ -64,19 +64,17 @@
         </span>
         <span style="float:right;">
             <?php
-            if($data->status == 0 && $data->from_id != Yii::app()->user->id)
-            {
-                $url = Yii::app()->createUrl('question/ignore/', array('ajax'=>1, 'id'=>$data->id));
-                echo CHtml::link('ignore',$url, array('class'=>'ignore-link'));
-            }
-            else
-            {
-                $url = Yii::app()->createAbsoluteUrl('question/delete/', array('ajax'=>1, 'id'=>$data->id));
-                echo CHtml::link('delete',$url, array('class'=>'delete-link'));
-            }
-            echo ' ';
-            $url = Yii::app()->createUrl('question/respond/', array('ajax'=>1, 'id'=>$data->id));
-            echo CHtml::link('respond',$url, array('class'=>'response-link'));    
+                if(isset($delete_link)){
+                    $url = Yii::app()->createAbsoluteUrl('question/delete/', array('ajax'=>1, 'id'=>$data->id));
+                    echo CHtml::link('delete',$url, array('class'=>'delete-link'));
+                }else{
+                    $url = Yii::app()->createUrl('question/ignore/', array('ajax'=>1, 'id'=>$data->id));
+                    echo CHtml::link('ignore',$url, array('class'=>'ignore-link'));
+                }
+            ?> 
+            <?php
+                $url = Yii::app()->createUrl('question/respond/', array('ajax'=>1, 'id'=>$data->id));
+                echo CHtml::link('respond',$url, array('class'=>'response-link'));    
             ?>
         </span>
     </div>

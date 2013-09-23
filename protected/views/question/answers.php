@@ -31,4 +31,5 @@
 </div>
 <script>
     $('.answers-link').html('A');
+    appendNumbersTitle('a', 0);
 </script>

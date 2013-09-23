@@ -200,8 +200,12 @@ body {-webkit-font-smoothing: antialiased;}
             width: calc(100% - 20px)!important;
     }
     .view-image img{
-        width:60px;
-        height:60px;
+        margin-top: 7px;
+        width:50px;
+        height:50px;
+    }
+    .view-buttons{
+        margin-top: 34px;
     }
 }
 @media (min-width: 600px) {

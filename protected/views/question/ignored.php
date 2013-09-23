@@ -7,7 +7,7 @@
             $this->widget('zii.widgets.CListView',array(
                     'id' => 'questions',
                     'dataProvider' => $dataProvider,
-                    'itemView' => '//question/_feed',
+                    'itemView' => '//question/_new',
                     'viewData' => array('delete_link'=>true),
                     'template' => '{items} {pager}',
                     'emptyText' => '

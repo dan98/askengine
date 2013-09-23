@@ -81,7 +81,7 @@ class DefaultController extends Controller {
 						}
 						
 						$identity->id = $user->id;
-						$identity->username = $user->email;
+						$identity->email = $user->email;
 						$this->_linkProvider($identity);
 						$this->_loginUser($identity);
 					} // } else { do nothing } => the form will get redisplayed

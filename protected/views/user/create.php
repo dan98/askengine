@@ -12,9 +12,6 @@
 
             <?php echo $form->textFieldRow($model,'lastname'); ?>
             
-            <?php echo $form->textFieldRow($model,'username'); ?>
-            
-            
             <?php echo $form->textAreaRow($model,'about',array('rows'=>6, 'cols'=>30)); ?>
             <?php //echo $form->textFieldRow($model,'residence'); ?>
 
